@@ -22,20 +22,6 @@ library(broom)
 
 ################################
 ##Functions
-protocol_survreg <- function(data_in) {
-  # apply model and get p
-  # defaults to log normal distribution
-  fit1 <- survreg(
-    Surv(val_start, val_end, type = "interval2") ~
-      #Batch+difftime+sex+KidneyDisease+bmi,
-      Batch,
-    data = data_in,
-    dist = "lognormal"
-  )
-  
-  return(fit1)
-}
-
 
 replace_imputed <- function(original, imputed) {
   namestoChange <-
@@ -516,7 +502,7 @@ data_all_imputed_fillin_without_transform <- data_all_imputed
 ####simple imputation of main covar
 ##prep median for correction covar
 med_bmi <- median(data_all$bmi, na.rm = TRUE)
-med_difftime <- median(data_all$difftime, na.rm = TRUE)
+med_difftime <- median(data_all$difftime[data_all$difftime> 0], na.rm = TRUE)
 
 ###prepare datasets for correction covar
 data_all_imputed <- data_all_imputed  %>%
