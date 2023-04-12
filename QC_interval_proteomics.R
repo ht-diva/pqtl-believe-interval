@@ -1,12 +1,9 @@
+# Required packages
+packages <- c('usethis', 'devtools', 'SomaDataIO', 'FactoMineR', 'ggplot2', 'haven', 'dplyr', 'tidyverse', 'VCA', 'lme4')
 
-# install.packages("devtools")
-# devtools::install_github("SomaLogic/SomaDataIO")
-# install.packages("ggplot2")
-# install.packages("tidyverse")
-install.packages("FactoMineR")
-install.packages("VCA")
-# install.packages("haven")
-install.packages("lme4")
+# Install packages only if they are not already present
+install.packages(setdiff(packages, rownames(installed.packages())), dependencies = TRUE)
+
 
 library(haven)
 library(SomaDataIO)

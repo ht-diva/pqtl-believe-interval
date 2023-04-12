@@ -1,3 +1,11 @@
+# Required packages
+packages <- c('usethis', 'devtools', 'SomaDataIO', 'FactoMineR', 'ggplot2', 'haven', 'dplyr', 'tidyverse', 'VCA', 'lme4', 'labelled', 'NADA', 'msm', 'survey', 'broom')
+
+# Install packages only if they are not already present
+install.packages(setdiff(packages, rownames(installed.packages())), dependencies = TRUE)
+
+
+
 #####Preparation dataset from raw data####
 
 library(haven)
