@@ -1,31 +1,52 @@
-if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-BiocManager::install("biomaRt")
+#if (!requireNamespace("BiocManager", quietly = TRUE))
+#    install.packages("BiocManager")
+#BiocManager::install("biomaRt")
+
 library(biomaRt)
+# super useful function 'separate_rows' from tidyr to separate rows by delimiter 
+library(tidyr)
 
 # Aptamer level annotations were created by mapping proteins to genomic coordinates using GENCODE (GRCh38), version 32 (Ensembl 98) [76].
 # GENCODE: http://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg38&c=chrX&g=knownGene
 
 pr_file = "/center/healthds/pQTL/Reference_datasets_for_QC_proteomics/Somalogic/SomaScan_V4.1_7K_Annotated_Content_20210616.csv"
 pr = read.csv(pr_file, header=T,stringsAsFactors=F)
+pr = pr[pr$Organism=="Human",]
 
-biolist <- as.data.frame(listMarts())
-ensembl=useMart("ensembl")
-esemblist <- as.data.frame(listDatasets(ensembl))
-ensembl = useDataset("hsapiens_gene_ensembl",mart=ensembl)
-filters = listFilters(ensembl)
-attributes = listAttributes(ensembl)
+pr = data.frame(separate_rows(pr, "HGNC.ID", sep = "\\|"))
+pr = data.frame(separate_rows(pr, "Entrez.Gene.ID", sep = "\\|"))
+pr = data.frame(separate_rows(pr, "Ensembl.Gene.ID", sep = "\\|"))
+pr = pr[!duplicated(pr),]
 
-t2g<-getBM(attributes=c('ensembl_gene_id',"ensembl_gene_id_version",'chromosome_name','start_position','end_position'), mart = ensembl)
-my_ids <- data.frame(ensembl_gene_id=pr$Ensembl.Gene.ID)
-# my_ids$ensembl_gene_id <- gsub("\\..*","", my_ids$ensembl_gene_id_version)
-my_ids.version <- merge(my_ids, t2g, by= 'ensembl_gene_id') # 6746 matching by ensembl_gene_id
+#obtaining the TSS information from Biomart in form of dataframe
+t2g <- getBM(attributes=c("chromosome_name", "entrezgene_id", "hgnc_id", "hgnc_symbol", "transcript_is_canonical", "transcript_start", "transcript_end", "strand", "ensembl_gene_id","gene_biotype", "ensembl_transcript_id"),
+      filters ="biotype",
+      values  =c("protein_coding"),
+      mart    = ensembl)
 
-pr2 = merge(pr, my_ids.version, by.x = "Ensembl.Gene.ID", by.y="ensembl_gene_id")
-pr2 = pr2[,c("X...SeqId", "chromosome_name", "start_position", "end_position")]
-pr2 = pr2[!duplicated(pr2),] # 6746
+# keep only chroms  c(1:22,"X", "Y")
+t2g = t2g[t2g$chromosome_name %in%  c(1:22,"X", "Y"),]
+# Keep only canonical transcripts from Ensembl or longest transcript?
+# t2g = t2g[!is.na(t2g$transcript_is_canonical),]
+
+table(pr$HGNC.ID %in% t2g$hgnc_id)
+table(pr$Entrez.Gene.ID %in% t2g$entrezgene_id)
+table(pr$Ensembl.Gene.ID %in% t2g$ensembl_gene_id)
+
+# ok, so we just make a decision then, if we go for most mapping, we will have to make the decision on what to do re. the multiple TSS and multiple genes per SomaID
+# e.g. 
+t2g[t2g$hgnc_symbol=="ZSCAN2",]
 
 # write.table(my_ids.version, file="/group/diangelantonio/users/claudia/ensembl_SomaScan_V4.1_7K_Annotated_Content_20210616.txt", sep="\t", row.names = FALSE, quote = FALSE, col.names = TRUE)
+
+
+
+
+
+
+######################################
+############# DECIDE WHAT TO DO BEFORE CONTINUING 
+#######################################
 
 # for matrixeqtl:
 # geneid        chr     s1      s2
