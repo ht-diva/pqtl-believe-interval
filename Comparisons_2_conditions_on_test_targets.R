@@ -55,8 +55,8 @@ filenames <- list.files(paste(path,"results/tophits",sep=""), pattern="*.txt", f
 listOfFiles <- lapply(filenames, function(x) read.table(x, header = TRUE))
 #1 file per residual tested
 # names<-gsub('/group/diangelantonio/users/Solene/regenie_believe/test-pheno-replicate/results/tophits/', '', filenames)
-names<-gsub(paste(path,'results/tophits/',sep=""), '', filenames)
-names<-gsub('.regenie.filtered.annotated.txt', '', names)
+names<-gsub(paste(path,'results/tophits/',sep=""), '', filenames)  ##to modify with your own path to results
+names<-gsub('.regenie.filtered.annotated.txt', '', names) #to modify with your own name of results files
 lapply(listOfFiles,dim)
 names(listOfFiles)<-names
 ##function to retrieve the name of the model tested
@@ -84,7 +84,6 @@ table(df$model)##list of conditions for which we have hits reaching significant 
 A<-"all_covar"
 ##choosing condition B
 B<-"KidneyDisease"
-
 ###fastLMM###
 
 ##formatting results
@@ -103,6 +102,8 @@ tar_A<-unique(df_comp$seq[df_comp$model==A])
 tar_B<-unique(df_comp$seq[df_comp$model==B])
 ##all_targets
 tar<-unique(c(tar_A,tar_B))
+##TO ADD: check from the residuals files of targets to test if indeed all the targets from TAR were tested from the 2 proteins
+##otherwise, remove them of the comparison
 
 ##Venn diagram by protein
 snp_A<-lapply(tar_A, function(X)  {df_comp$ID[df_comp$model==A&df_comp$seq==X]})
