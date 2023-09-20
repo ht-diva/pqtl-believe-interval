@@ -36,7 +36,6 @@ pr = pr[,c("X...SeqId", "SomaId", "Target.Name", "Target.Full.Name", "UniProt.ID
 	t2g = t2g[t2g$chromosome_name %in% c(1:22,"X", "Y"),]
 	t2g = t2g[t2g$gene_biotype == "protein_coding",]
 
-fuck = subset(matched_hgnc, matched_hgnc$X...SeqId ==seqid)
 	###
 	pr_hgnc = data.frame(separate_rows(pr, "HGNC.ID", sep = "\\|"))
 	pr_hgnc = pr_hgnc[pr_hgnc$HGNC.ID !="",]
