@@ -41,10 +41,10 @@ replace_imputed <- function(original, imputed) {
 
 ################################
 ###load somalogic datasets
-##batch 1
+##first batch
 my_adat <-
   read_adat(
-    "/processing_data/shared_datasets/plasma_proteome/believe/raw_data/proteome/batch_3/SS-2227214_v4.1_EDTAPlasma.hybNorm.medNormInt.plateScale.calibrate.anmlQC.qcCheck.anmlSMP.adat"
+    "/processing_data/shared_datasets/plasma_proteome/interval/proteome/somalogic/7k/batch_3/SS-2227214_v4.1_EDTAPlasma.hybNorm.medNormInt.plateScale.calibrate.anmlQC.qcCheck.adat"
   )
 is.soma_adat(my_adat)
 metaprot1 <- as.data.frame(getAnalyteInfo(my_adat))
@@ -80,10 +80,10 @@ calib_1 <-
 b1 <- b1[b1$SampleType == "Sample",]
 
 
-##batch 2
+##second batch
 my_adat <-
   read_adat(
-    "/processing_data/shared_datasets/plasma_proteome/believe/raw_data/proteome/batch_4/SS-2230701_v4.1_EDTAPlasma.hybNorm.medNormInt.plateScale.calibrate.anmlQC.qcCheck.anmlSMP.adat"
+    "/processing_data/shared_datasets/plasma_proteome/interval/proteome/somalogic/7k/batch_4/SS-2230701_v4.1_EDTAPlasma.hybNorm.medNormInt.plateScale.calibrate.anmlQC.qcCheck.adat"
   )
 is.soma_adat(my_adat)
 metaprot2 <- as.data.frame(getAnalyteInfo(my_adat))
@@ -489,7 +489,7 @@ data_all_imputed <- data_all_imputed %>%
 
 ##save main and metaprot
 #saveRDS(list(metadata=metaprot,imputed_cleaned_dataset=data_all_imputed),"QC_proteomics/cleaned_INTERVAL.Rds")
-saveRDS(
-  list(metadata = metaprot, imputed_cleaned_dataset = data_all_imputed),
-  "/center/healthds/pQTL/INTERVAL/cleaned_INTERVAL.Rds"
-)
+# saveRDS(
+#   list(metadata = metaprot, imputed_cleaned_dataset = data_all_imputed),
+#   "/center/healthds/pQTL/INTERVAL/cleaned_INTERVAL.Rds"
+# )
