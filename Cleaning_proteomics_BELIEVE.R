@@ -46,7 +46,7 @@ replace_imputed <- function(original, imputed) {
 ##batch 1
 my_adat <-
   read_adat(
-    "raw-data/SS-2218747_v4.1_EDTAPlasma.hybNorm.medNormInt.plateScale.calibration.anmlQC.qcCheck.anmlSMP.adat"
+    "/processing_data/shared_datasets/plasma_proteome/believe/raw_data/proteome/batch_1/SS-2218747_v4.1_EDTAPlasma.hybNorm.medNormInt.plateScale.calibrate.anmlQC.qcCheck.adat"
   )
 is.soma_adat(my_adat)
 metaprot1 <- as.data.frame(getAnalyteInfo(my_adat))
@@ -85,7 +85,7 @@ b1 <- b1[b1$SampleType == "Sample",]
 ##batch 2
 my_adat <-
   read_adat(
-    "raw-data/SS-2225082_v4.1_EDTAPlasma.hybNorm.medNormInt.plateScale.calibration.anmlQC.qcCheck.anmlSMP.adat"
+    "/processing_data/shared_datasets/plasma_proteome/believe/raw_data/proteome/batch_2/SS-2225082_v4.1_EDTAPlasma.hybNorm.medNormInt.plateScale.calibrate.anmlQC.qcCheck.adat
   )
 is.soma_adat(my_adat)
 my_adat <- my_adat[,-26]
@@ -277,7 +277,7 @@ dim(metaprot)
 ######Load BELIEVE covariates - prepare datasets############
 
 ##load main covariates
-pheno <- read_dta("raw-data/Phenotypes_Cambridge/analysis.dta")
+pheno <- read_dta("/processing_data/shared_datasets/plasma_proteome/believe/raw_data/phenotypes/analysis.dta")
 genid4 <- pheno$genid4
 pheno_g <- pheno[!is.na(pheno$genid4),]
 table(duplicated(pheno_g$genid4))
@@ -294,7 +294,7 @@ pheno_covar_BELIEVE <- colnames(pheno_g)
 
 ##load additionnal covariates
 sup <-
-  read.csv("raw-data/Phenotypes_Cambridge/BELIEVEdata_P5045_20221003_v2.csv")
+  read.csv("/processing_data/shared_datasets/plasma_proteome/believe/raw_data/phenotypes/BELIEVEdata_P5050_20221207.csv")
 sup$IDNO <- as.character(sup$IDNO)
 sup$DateBloodDraw <- as.Date(sup$DateBloodDraw)
 sup$DateLastMeal <- as.Date(sup$DateLastMeal)
@@ -523,7 +523,7 @@ data_all_imputed <- data_all_imputed %>%
 
 ##save main and metaprot
 #saveRDS(list(metadata=metaprot,imputed_cleaned_dataset=data_all_imputed),"QC_proteomics/cleaned_Believe.Rds")
-saveRDS(
-  list(metadata = metaprot, imputed_cleaned_dataset = data_all_imputed),
-  "/center/healthds/pQTL/BELIEVE/cleaned_Believe.Rds"
-)
+# saveRDS(
+#   list(metadata = metaprot, imputed_cleaned_dataset = data_all_imputed),
+#   "/center/healthds/pQTL/BELIEVE/cleaned_Believe.Rds"
+# )
