@@ -1,0 +1,66 @@
+{
+"TOPMED13K": {
+    "build": "hg38",
+    "genotyped": "/shared/statgen/CHRIS13K/plinkFormat/CHRIS13K.GT",
+    "nfiles": 22,
+    "plinkfiles": [
+      "/plinkFormat/chr1.forgwas.nofid",
+      "/plinkFormat/chr2.forgwas.nofid",
+      "/plinkFormat/chr3.forgwas.nofid",
+      "/plinkFormat/chr4.forgwas.nofid",
+      "/plinkFormat/chr5.forgwas.nofid",
+      "/plinkFormat/chr6.forgwas.nofid",
+      "/plinkFormat/chr7.forgwas.nofid",
+      "/plinkFormat/chr8.forgwas.nofid",
+      "/plinkFormat/chr9.forgwas.nofid",
+      "/plinkFormat/chr10.forgwas.nofid",
+      "/plinkFormat/chr11.forgwas.nofid",
+      "/plinkFormat/chr12.forgwas.nofid",
+      "/plinkFormat/chr13.forgwas.nofid",
+      "/plinkFormat/chr14.forgwas.nofid",
+      "/plinkFormat/chr15.forgwas.nofid",
+      "/plinkFormat/chr16.forgwas.nofid",
+      "/plinkFormat/chr17.forgwas.nofid",
+      "/plinkFormat/chr18.forgwas.nofid",
+      "/plinkFormat/chr19.forgwas.nofid",
+      "/plinkFormat/chr20.forgwas.nofid",
+      "/plinkFormat/chr21.forgwas.nofid",
+      "/plinkFormat/chr22.forgwas.nofid"
+    ],
+    "vcffiles": [
+      "/TOPMed/chr1.dose.vcf.gz",
+      "/TOPMed/chr2.dose.vcf.gz",
+      "/TOPMed/chr3.dose.vcf.gz",
+      "/TOPMed/chr4.dose.vcf.gz",
+      "/TOPMed/chr5.dose.vcf.gz",
+      "/TOPMed/chr6.dose.vcf.gz",
+      "/TOPMed/chr7.dose.vcf.gz",
+      "/TOPMed/chr8.dose.vcf.gz",
+      "/TOPMed/chr9.dose.vcf.gz",
+      "/TOPMed/chr10.dose.vcf.gz",
+      "/TOPMed/chr11.dose.vcf.gz",
+      "/TOPMed/chr12.dose.vcf.gz",
+      "/TOPMed/chr13.dose.vcf.gz",
+      "/TOPMed/chr14.dose.vcf.gz",
+      "/TOPMed/chr15.dose.vcf.gz",
+      "/TOPMed/chr16.dose.vcf.gz",
+      "/TOPMed/chr17.dose.vcf.gz",
+      "/TOPMed/chr18.dose.vcf.gz",
+      "/TOPMed/chr19.dose.vcf.gz",
+      "/TOPMed/chr20.dose.vcf.gz",
+      "/TOPMed/chr21.dose.vcf.gz",
+      "/TOPMed/chr22.dose.vcf.gz"
+    ]
+  },
+  "WES10K": {
+    "build": "hg19",
+    "genotyped": "/shared/statgen/CHRIS10K/plinkFormat/CHRIS10K.GT",
+    "nfiles": 1,
+    "plinkfiles": [
+      "/shared/statgen/CHRIS10K/plinkFormat/CHRIS10K.WES.imputed.rsq03"
+    ],
+    "vcffiles": [
+      "/shared/statgen/CHRIS10K/CHRIS10K.WES.imputed.rsq03.vcf.gz"
+    ]
+  }
+  }
