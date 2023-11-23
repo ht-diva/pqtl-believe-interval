@@ -10,7 +10,7 @@ library(ff)
 ################ UPLOAD THE EXPERIMENT CONFIGURATION FILE ###########
 
 # set experiment config
-configs <- RJSONIO::fromJSON("try_experiments_config.json")
+configs <- RJSONIO::fromJSON("my_experiments_config.json")
 
 conf = configs[[1]]
 
@@ -34,10 +34,12 @@ if(RDS == TRUE){
   
 } else{
   protdata <-read.csv(protdatapath)
+  protdata_cor <- protdata[, -which(names(protdata) == "SampleId")]
+  protnames <- colnames(protdata_cor)
   phenodata <-read.csv(phenodatapath)}
 
 
-protdata_matrix <- as.matrix(protdata)
+protdata_matrix <- as.matrix(protdata_cor)
 correlation_matrix <- cor(protdata_matrix)
 save(correlation_matrix, file=paste(results_path,"/cor_matrix.Rdata", sep=""))
 cor_matrix_rm <- correlation_matrix
@@ -55,8 +57,9 @@ for(experiment_name in names(configs)){
   significance_thr = conf$significance_thr
   
   ############################
-  covar_dataframe <- phenodata[covariates]
-  final.ds = cbind(protdata, covar_dataframe)
+  covar_dataframe <- phenodata[c(covariates, "SampleId")]
+  final.ds = left_join(protdata,covar_dataframe,by="SampleId")
+  final.ds <- final.ds[, -which(names(final.ds) == "SampleId")]
   
   if(treatment_interaction == TRUE){
     summary_list <- mclapply(protnames, function(i) {
@@ -139,5 +142,3 @@ for(experiment_name in names(configs)){
 ### REFERENCES ####
 # [1] Cheverud, J. M. A simple correction for multiple comparisons in interval mapping genome scans. Heredity. 87, 52–58 (2001).
 # [2]  Lynch, M. and Walsh, B. (1998). Genetics and Analysis of Quantitative Traits. Sinauer Associates, Sunderland, MA.
-
-
