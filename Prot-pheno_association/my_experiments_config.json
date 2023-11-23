@@ -1,0 +1,97 @@
+
+{
+
+    "sex": {
+
+        "protdatapath": "/center/healthds/pQTL/INTERVAL/cleaned_INTERVAL.Rds",
+        "phenodatapath": "",
+        "results_path": "/group/diangelantonio/users/alessia_mapelli/pQTL/Phenotype-Prot_associatioon",
+        "results_filename": "Prot_association_sex",
+        "col_of_start_protein": 95,
+        "RDS": "TRUE",
+
+        "treatment_interaction" : "FALSE",        
+        "correlation_threshold": 0.95,
+        "covariates": "sexPulse",
+        "correction": "lynch",
+        "test_correction_n": "effective",
+        "significance_thr" : 0.05
+
+    },
+
+    "age": {
+
+        "protdatapath": "/center/healthds/pQTL/INTERVAL/cleaned_INTERVAL.Rds",
+        "phenodatapath": "",
+        "results_path": "/group/diangelantonio/users/alessia_mapelli/pQTL/Phenotype-Prot_associatioon",
+        "results_filename": "Prot_association_age",
+        "col_of_start_protein": 95,
+        "RDS": "TRUE",
+
+        "treatment_interaction" : "FALSE",        
+        "correlation_threshold": 0.95,
+        "covariates": "agePulse",
+        "correction": "lynch",
+        "test_correction_n": "effective",
+        "significance_thr" : 0.05
+
+    },
+
+    "age2": {
+
+        "protdatapath": "/center/healthds/pQTL/INTERVAL/cleaned_INTERVAL.Rds",
+        "phenodatapath": "",
+        "results_path": "/group/diangelantonio/users/alessia_mapelli/pQTL/Phenotype-Prot_associatioon",
+        "results_filename": "Prot_association_age2",
+        "col_of_start_protein": 95,
+        "RDS": "TRUE",
+
+        "treatment_interaction" : "FALSE",        
+        "correlation_threshold": 0.95,
+        "covariates": "agePulse2",
+        "correction": "lynch",
+        "test_correction_n": "effective",
+        "significance_thr" : 0.05
+
+    },
+
+    "BMI": {
+
+        "protdatapath": "/center/healthds/pQTL/INTERVAL/cleaned_INTERVAL.Rds",
+        "phenodatapath": "",
+        "results_path": "/group/diangelantonio/users/alessia_mapelli/pQTL/Phenotype-Prot_associatioon",
+        "results_filename": "Prot_association_BMI",
+        "col_of_start_protein": 95,
+        "RDS": "TRUE",
+
+        "treatment_interaction" : "FALSE",        
+        "correlation_threshold": 0.95,
+        "covariates": "bmi",
+        "correction": "lynch",
+        "test_correction_n": "effective",
+        "significance_thr" : 0.05
+
+    },
+
+
+    "age*sex": {
+
+        "protdatapath": "/center/healthds/pQTL/INTERVAL/cleaned_INTERVAL.Rds",
+        "phenodatapath": "",
+        "results_path": "/group/diangelantonio/users/alessia_mapelli/pQTL/Phenotype-Prot_associatioon",
+        "results_filename": "Prot_association_age_sex",
+        "col_of_start_protein": 95,
+        "RDS": "TRUE",
+
+        "treatment_interaction" : "TRUE",        
+        "correlation_threshold": 0.95,
+        "covariates": ["sexPulse", "agePulse"],
+        "correction": "lynch",
+        "test_correction_n": "effective",
+        "significance_thr" : 0.05
+
+    }
+
+}
+  
+
