@@ -70,11 +70,16 @@ p<-ggplot(dtjoin,aes(x=Dim.1,y=Dim.2,col=as.numeric(agePulse)))+geom_point()
 p
 p<-ggplot(dtjoin,aes(x=Dim.1,y=Dim.2,col=as.numeric(bmi)))+geom_point()
 p
+p<-ggplot(dtjoin,aes(x=Dim.1,y=Dim.2,col=as.factor(SOMAPICK_CASE)))+geom_point()
+p
+
+
 
 
 dtjoin$sexPulse<-as.factor(dtjoin$sexPulse)
 dtjoin$PlateId<-as.factor(dtjoin$PlateId)
 dtjoin$Batch<-as.factor(dtjoin$Batch)
+dtjoin$SOMAPICK_CASE<-as.factor(dtjoin$SOMAPICK_CASE)
 dtjoin$agePulse<-scale(dtjoin$agePulse)
 dtjoin$bmi<-scale(dtjoin$bmi)
 dtjoin$agePulse2<-scale(dtjoin$agePulse2)
