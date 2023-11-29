@@ -33,6 +33,7 @@ phenodata$BloodDraw <-
   as.POSIXct(paste(phenodata$attendanceDate, phenodata$appointmentTime, sep=" "), format = "%Y-%m-%d %H:%M", tz="Europe/London")
 phenodata$difftime <-
   as.numeric(difftime(phenodata$ProcessSample, phenodata$BloodDraw, units = "auto"))
+phenodata$BloodDraw_month <- format(phenodata$BloodDraw, "%m")
 write.csv(phenodata, "Interval_pheno_data.csv")
 meta_data_full <- readRDS("/center/healthds/pQTL/INTERVAL/cleaned_INTERVAL.Rds")$metadata
 write.csv(meta_data_full, "Interval_meta_data.csv")
@@ -72,8 +73,8 @@ p<-ggplot(dtjoin,aes(x=Dim.1,y=Dim.2,col=as.numeric(bmi)))+geom_point()
 p
 p<-ggplot(dtjoin,aes(x=Dim.1,y=Dim.2,col=as.factor(SOMAPICK_CASE)))+geom_point()
 p
-
-
+p<-ggplot(dtjoin,aes(x=Dim.1,y=Dim.2,col=as.numeric(BloodDraw_month)))+geom_point()
+p
 
 
 dtjoin$sexPulse<-as.factor(dtjoin$sexPulse)
@@ -85,6 +86,7 @@ dtjoin$bmi<-scale(dtjoin$bmi)
 dtjoin$agePulse2<-scale(dtjoin$agePulse2)
 dtjoin$difftime<-scale(dtjoin$difftime)
 dtjoin$ethnicPulse<-as.factor(dtjoin$ethnicPulse)
+dtjoin$BloodDraw_month <- as.factor(dtjoin$BloodDraw_month)
 
 
 mod<-lm(data=dtjoin,formula=Dim.1~difftime)
