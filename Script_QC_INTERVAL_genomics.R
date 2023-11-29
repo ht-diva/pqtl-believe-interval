@@ -424,6 +424,23 @@ p
 
 table(df_merge$true_anchestry_grouped)
 
+PCs <- load("PCs_imputed_anc.Rda")
+##1. 2 outliers in PC1-2
+outliers_anc<-PCs[PCs$imputed_anchestry=='Middle East',c("FID","IID")]
+no_outliers_anc<-PCs[!PCs$imputed_anchestry=='Middle East',c("FID","IID")]
+length(outliers_anc$IID)
+length(no_outliers_anc$IID)
+
+PCs_WO<-PCs[!PCs$IID%in%outliers_anc,]
+plot(PCs_WO$PC1,PCs_WO$PC2)
+plot(PCs_WO$PC3,PCs_WO$PC4)
+
+##save list of samples to keep and outliers
+write.table(outliers_anc, "ind.outliers.PC.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+write.table(no_outliers_anc, "final_sample_ids.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+                                                                
+
 ######## B.	Variants with low imputation quality
 
 ######## B.1. Recompute summary metrics within the sample with proteomics data in PLINK
@@ -517,7 +534,8 @@ write.table(c(intital_n_var,sum_keeped,sum_keeped_over_thr), file=paste(path_to_
 # files=$(ls $OUT_DIR/vcf/*.vcf.gz)
 # bcftools concat $files -Oz -o $OUT_DIR/vcf/allchromosomes.vcf.gz
 # plink2 --vcf $OUT_DIR/vcf/allchromosomes.vcf.gz --make-pgen --out $OUT_DIR/pgen/allchromosomes_imputed
-# plink2 --pfile $OUT_DIR/pgen/allchromosomes_imputed --pgen-info
+# plink2 --pfile $OUT_DIR/pgen/allchromosomes_imputed --keep $OUT_DIR/final_sample_ids.txt --make-pgen --out $OUT_DIR/pgen/allchromosomes_imputed_res
+# plink2 --pfile $OUT_DIR/pgen/allchromosomes_imputed_res --pgen-info
 
 
 ######## C.2. Imputed bgen in PLINK
@@ -529,9 +547,9 @@ write.table(c(intital_n_var,sum_keeped,sum_keeped_over_thr), file=paste(path_to_
 # --out $OUT_DIR/bgen/cleaned_imputed_INTERVAL_chr_${i}
 # done
 # plink2 \
-# --pfile $OUT_DIR/pgen/allchromosomes_imputed \
+# --pfile $OUT_DIR/pgen/allchromosomes_imputed_res \
 # --export bgen-1.2 \
-# --out $OUT_DIR/bgen/allchromosomes_imputed
+# --out $OUT_DIR/bgen/allchromosomes_imputed_res
 
 ###### D. Compute the first 20 PCs
 setwd("/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepC")
@@ -620,7 +638,7 @@ ind_to_keep<-which(!is_rel)
 ind.rel <- match(c(rel$IID1, rel$IID2), obj.bed$fam$sample.ID)
 
 head(ind.rel)
-length(ind.rel) #120, unique 117
+length(ind.rel) #120, unique 115
 
 ind.norel <- rows_along(obj.bed)[-ind.rel]
 length(ind.norel) #9138
