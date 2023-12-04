@@ -1,7 +1,7 @@
 # Protein Residuals Script README
 
 **Author:** Michela Carlotta Massi  
-**Date:** 2023-12-01
+**Date:** 2023-12-04
 
 ## Overview
 
@@ -19,11 +19,15 @@ install.packages(c("dplyr", "data.table", "tidyverse", "RJSONIO"))
 
 The script relies on a JSON configuration file (`residuals_config.json`) that contains experiment-specific parameters. In this file, you can specify the paths to protein data, covariates data, genetic principal components (or supply one path for a dataset containing all information), and define the output path and filename for the results. The `conf_file_path` variable in the script points to this configuration file.
 
-**NOTE**: under `model_definition` the user should define the linear regression model that to extract residuals from. **In the definition, covariates and principal components should be called with the names of the columns in the datasets provided as input** (see Data Requirements).
+**NOTES** 
+- Under `model_definition` the user should define the linear regression model that to extract residuals from. **In the definition, covariates and principal components should be called with the names of the columns in the datasets provided as input** (see Data Requirements).
+Currently, NAs in any of the variables included in the model definition will result in `NA` for that subject in the residuals' dataframe.
 
-**NOTE 2**: The config file is nested to allow for extracting residuals from different models, or using different datasets. The structure of the configuration file should remain nested irrespectively of the number of experiments to run. In case of a single experiment, the output will be saved as defined in `results_filename`, otherwise, the script will attach to the output name of each experiment the name defined at the first level of the nested config file.
+- The key `id_cols` in the configuration file requires a list containing the names of all the ID columns that will be concatenated to the output of the script. Therefore, the naming should reflect columns available in at least one of the dataframes supplied to the script.
 
-**NOTE 3** the variable `add_suffix` in the configuration file defines whether the columns of the residuals will be saved as "protein_name_res" (if `add_suffix = 1`) or "protein_name" (otherwise).
+- The config file is nested to allow for extracting residuals from different models, or using different datasets. The structure of the configuration file should remain nested irrespectively of the number of experiments to run. In case of a single experiment, the output will be saved as defined in `results_filename`, otherwise, the script will attach to the output name of each experiment the name defined at the first level of the nested config file.
+
+- The variable `add_suffix` in the configuration file defines whether the columns of the residuals will be saved as "protein_name_res" (if `add_suffix = 1`) or "protein_name" (otherwise).
 
 ```R
 # Example of residuals_config.json
@@ -61,7 +65,7 @@ The script supports two data configurations:
 **NOTE**: the script does not perform any ID matching. **The 3 files supplied in this case should contain the same samples in the same order**.
   
 2. **Single Dataset (n_datasets = 1):**
-   - Unique Dataset: Unique dataset (.txt file) containing all information needed to fit the linear model, including proteins, covariates, and genetic principal components.. This case requires the range of indices identifying the proteins in the dataframe. Provide it using the "n_start_prot" and "n_end_prot" parameters in the configuration file. 
+   - Unique Dataset: Unique dataset (.txt file) containing all information needed to fit the linear model, including proteins, covariates, and genetic principal components.. This case requires the range of indices identifying the proteins in the dataframe. Provide it using the`n_start_prot` and `n_end_prot` parameters in the configuration file. 
 
 ## Functions
 
