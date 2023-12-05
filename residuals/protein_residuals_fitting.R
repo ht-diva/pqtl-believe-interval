@@ -120,7 +120,7 @@ for(experiment_name in names(configs)){
     results_filename = paste0(results_path, results_filename, '.txt')
   }
   
-  data_res = cbind(data_res, data_all_info[,id_cols])
+  data_res = cbind(data_all_info[,id_cols], data_res)
   write.table(data_res, file = results_filename, sep='\t', row.names=FALSE, quote=FALSE, eol="\n")
  
   print("All done!")
