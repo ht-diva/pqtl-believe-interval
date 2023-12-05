@@ -3,6 +3,9 @@
 # Base path of the project
 PROJPATH="/scratch/${USER}/pQTL_somalogic"
 
+# A key present in the ${GENDATA} json file
+IMPPANEL="HRC13K"
+
 # Create the result path based on the imputation panel
 RES_PATH=${PROJPATH}/results_somalogic_${IMPPANEL}_int/results
 OUT_PATH=${RES_PATH}/conditional_analysis
@@ -11,9 +14,6 @@ SCRIPTS_PATH=${PROJPATH}/scripts
 
 # Genetic data json configuration
 GENDATA=${PROJPATH}/genetic_data.json
-
-# A key present in the ${GENDATA} json file
-IMPPANEL="HRC13K"
 
 # Create directories
 mkdir -p ${PROJPATH}
@@ -43,7 +43,7 @@ do
 #SBATCH --partition=cpuq
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=22
-#SBATCH --output=${LOG_PATH}/logs/%j_tdb_store.log
+#SBATCH --output=${LOG_PATH}/%j_cond_analysis.log
 #SBATCH --mem-per-cpu=10G
 #SBATCH --time=08:00:00
 
