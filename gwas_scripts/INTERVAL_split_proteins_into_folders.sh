@@ -34,22 +34,22 @@ for i in $chunks; do
         echo $i;
 
         cd $main_dir
-        cd chunk_$i
-        chunk_conf=chunk_${i}.conf
-        chunk_sbatch=chunk_${i}.sbatch
+        cd $i
+        chunk_conf=${i}.conf
+        chunk_sbatch=${i}.sbatch
 
         cp $main_conf $chunk_conf
         cp $main_sbatch $chunk_sbatch
         pheno=$PWD/INTERVAL_NonImp_residuals_new_ReorderCols_FID_IID_OtherPheno.txt
         # print phenotypes comma separated
 
-        sed 's/test_targets_1_2/chunk_'$i'/' $chunk_conf > temp && mv temp $chunk_conf
+        sed 's/test_targets_1_2/'$i'/' $chunk_conf > temp && mv temp $chunk_conf
         sed 's#/exchange/healthds/pQTL/INTERVAL/INTERVAL_NonImp_residuals_new_ReorderCols_FID_IID_OtherPheno.txt#'$PWD'/INTERVAL_NonImp_residuals_new_ReorderCols_FID_IID_OtherPheno.txt#g' $chunk_conf > temp && mv temp $chunk_conf
         list_proteins=$(awk 'NR==1' $pheno | cut -f 3- | sed -e 's/\s\+/,/g')
         sed 's/seq.10000.28_res,seq.10001.7_res/'$list_proteins'/' $chunk_conf > temp && mv temp $chunk_conf
 
         sed 's/single_project_targets_1_2.conf/'$chunk_conf'/' $chunk_sbatch > temp && mv temp $chunk_sbatch
-        sed 's/test_/test_chunk_'$i'/' $chunk_sbatch > temp && mv temp $chunk_sbatch
+        sed 's/test_/test_'$i'/' $chunk_sbatch > temp && mv temp $chunk_sbatch
         
         if [ "$submit" = true ] ; then
                 sbatch $chunk_sbatch
