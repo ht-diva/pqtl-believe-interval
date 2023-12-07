@@ -14,7 +14,7 @@
 PhenoFile=/exchange/healthds/pQTL/INTERVAL/INTERVAL_NonImp_residuals_new_ReorderCols_FID_IID_OtherPheno.txt
 main_conf=/exchange/healthds/pQTL/regenie/claudia_test/interval_dec_tests/split_proteins/single_project_targets_1_2.conf
 main_sbatch=/exchange/healthds/pQTL/regenie/claudia_test/interval_dec_tests/split_proteins/regenie_test_targets.sbatch
-main_dir=/exchange/healthds/pQTL/regenie/claudia_test/interval_dec_tests/split_proteins/
+main_dir=${PWD}
 ###########################
 submit=false
 ###########################
