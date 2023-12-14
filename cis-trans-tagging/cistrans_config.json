@@ -1,0 +1,20 @@
+{
+    "map_file_path": "target_gene_mapping_file_v9-12-23.csv",
+    "gwas_files_dir": "t/",
+    "id_column_name": "SeqId",
+    "pval_column" : "P",
+    "map_file_chrom_col": "chromosome",
+    "map_file_start_col": "start",
+    "map_file_end_col": "end",
+    "snp_file_pos_col": "POS",
+    "snp_file_chrom_col": "#CHROM",
+    "genomic_pos_id" : "ID",
+    
+    "pvalue_threshold": 5e-8,
+    "region_buffer_value": 500000,
+    "proximality_threshold": 5000,
+    "columns_to_drop": ["TOTAL", "NONSIG", "S0.05", "S0.01", "S0.001", "S0.0001", "SP2"],
+    
+    "save_path": ".",
+    "output_filename" : "test_out.pkl"
+}
