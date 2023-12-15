@@ -55,6 +55,7 @@ for(experiment_name in names(configs)){
   correction = conf$correction
   test_correction_n = conf$test_correction_n
   significance_thr = conf$significance_thr
+  results_filename <- conf$results_filename
   
   ############################
   covar_dataframe <- phenodata[c(covariates, "SampleId")]
@@ -135,7 +136,16 @@ for(experiment_name in names(configs)){
   
 }
 
-
+configs <- RJSONIO::fromJSON("my_experiments_config.json")
+for(experiment_name in names(configs)){
+  conf = configs[[experiment_name]]
+  results_filename <- conf$results_filename
+  results_path <- conf$results_path
+  res_path <- paste(results_path,"/results/",results_filename,".RData", sep="")
+  load(res_path)
+  ratio <- length(significant_patterns)/dim(result_ds)[1]
+  system(paste("echo 'for the expriment with covariate ",experiment_name, " the percentage of significance association is ",round(ratio,3),"'"))
+}
 
 
 
