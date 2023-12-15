@@ -76,7 +76,9 @@ p
 p<-ggplot(dtjoin,aes(x=Dim.1,y=Dim.2,col=as.numeric(ProcessSample_month)))+geom_point()
 p
 
-
+dtjoin <- dtjoin[c("SampleId", "identifier","Dim.1", "Dim.2", "Dim.3", "Dim.4", "Dim.5", "Dim.6", "Dim.7", "Dim.8", "Dim.9", "Dim.10", "Batch", "PlateId", "difftime", "sexPulse", "agePulse", "SOMAPICK_CASE", "agePulse2","ProcessSample_month", "ethnicPulse", "bmi")]
+dtjoin$SampleId <- as.factor(dtjoin$SampleId)
+dtjoin$identifier <- as.factor(dtjoin$identifier)
 dtjoin$sexPulse<-as.factor(dtjoin$sexPulse)
 dtjoin$PlateId<-as.factor(dtjoin$PlateId)
 dtjoin$Batch<-as.factor(dtjoin$Batch)
