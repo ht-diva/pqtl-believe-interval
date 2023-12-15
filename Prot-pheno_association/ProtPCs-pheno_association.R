@@ -33,7 +33,7 @@ phenodata$BloodDraw <-
   as.POSIXct(paste(phenodata$attendanceDate, phenodata$appointmentTime, sep=" "), format = "%Y-%m-%d %H:%M", tz="Europe/London")
 phenodata$difftime <-
   as.numeric(difftime(phenodata$ProcessSample, phenodata$BloodDraw, units = "auto"))
-phenodata$BloodDraw_month <- format(phenodata$BloodDraw, "%m")
+phenodata$ProcessSample_month <- format(phenodata$ProcessSample, "%m")
 write.csv(phenodata, "Interval_pheno_data.csv")
 meta_data_full <- readRDS("/center/healthds/pQTL/INTERVAL/cleaned_INTERVAL.Rds")$metadata
 write.csv(meta_data_full, "Interval_meta_data.csv")
@@ -73,7 +73,7 @@ p<-ggplot(dtjoin,aes(x=Dim.1,y=Dim.2,col=as.numeric(bmi)))+geom_point()
 p
 p<-ggplot(dtjoin,aes(x=Dim.1,y=Dim.2,col=as.factor(SOMAPICK_CASE)))+geom_point()
 p
-p<-ggplot(dtjoin,aes(x=Dim.1,y=Dim.2,col=as.numeric(BloodDraw_month)))+geom_point()
+p<-ggplot(dtjoin,aes(x=Dim.1,y=Dim.2,col=as.numeric(ProcessSample_month)))+geom_point()
 p
 
 
@@ -86,16 +86,26 @@ dtjoin$bmi<-scale(dtjoin$bmi)
 dtjoin$agePulse2<-scale(dtjoin$agePulse2)
 dtjoin$difftime<-scale(dtjoin$difftime)
 dtjoin$ethnicPulse<-as.factor(dtjoin$ethnicPulse)
-dtjoin$BloodDraw_month <- as.factor(dtjoin$BloodDraw_month)
+dtjoin$ProcessSample_month <- as.factor(dtjoin$ProcessSample_month)
 
+#### IMPUTE NA with the MEDIAN
+colSums(is.na(dtjoin))
+dtjoin <- dtjoin[!is.na(dtjoin$ProcessSample_month), ] 
+dtjoin <- as.data.frame(lapply(dtjoin, function(x) ifelse(is.na(x), median(x, na.rm = TRUE), x)))
+colSums(is.na(dtjoin))
+write.csv(dtjoin, "PCs_pheno_no_nan.csv")
 
+#### EXPLORATORY ANALYSIS
+hist(as.numeric(dtjoin$ProcessSample_month))
+hist(phenodata$difftime, xlab = "Difftime", main="Histogram of Difftime")
+
+### DEFINE THE MODELS
+# One for each single variable
 mod<-lm(data=dtjoin,formula=Dim.1~difftime)
 summary(mod)
-mod<-lm(data=dtjoin,formula=Dim.2~difftime)
-summary(mod)
 
+# Multivaraite model
 mod<-lm(data=dtjoin,formula=Dim.1~sexPulse+agePulse+PlateId+difftime)
 summary(mod)
-mod<-lm(data=dtjoin,formula=Dim.2~sexPulse+agePulse+PlateId+difftime)
-summary(mod)
+
 
