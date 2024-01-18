@@ -1,0 +1,25 @@
+{
+    "target_gene_map_file_dir": "target_gene_mapping_file_v9-12-23.csv",
+    "map_file_chrom_col": "chromosome",
+    "map_file_start_col": "start",
+    "map_file_end_col": "end",
+    "map_file_gene_name": "Entrez_Gene_Name",
+    "prot_id_column_name": "SeqId",
+
+    "gene_pos_file_dir": "glist-hg19.txt",
+    "genepos_file_genecol_name": "GENE_NAME",
+    
+    "gwas_files_dir": "path/to/conditional/analysis/output",
+    "pval_column" : "p",
+    "snp_file_pos_col": "bp",
+    "snp_file_chrom_col": "Chr",
+    
+    "pvalue_threshold": 5e-8,
+    "region_buffer_value": 500000,
+    "proximality_threshold": 5000,
+    "columns_to_drop": [],
+    
+    "save_path": "path/to/results/folder",
+    "output_filename" : "test_out_cond.pkl"
+}
+
