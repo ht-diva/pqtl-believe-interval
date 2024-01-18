@@ -155,7 +155,7 @@ def cis_trans_tagger(config_file):
     unique_trans_snps[params['snp_file_chrom_col']] = unique_trans_snps[params['snp_file_chrom_col']].astype(str)
 
     # Sorting the DataFrames
-    unique_trans_snps = unique_trans_snps.sort_values(by=[params['snp_file_chrom_col'], params['snp_file_chrom_col']])
+    unique_trans_snps = unique_trans_snps.sort_values(by=[params['snp_file_chrom_col'], params['snp_file_pos_col']])
     gene_df = gene_df.sort_values(by=['CHR', 'START'])
 
 
