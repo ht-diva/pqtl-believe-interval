@@ -1,0 +1,19 @@
+{
+  
+  'main':{
+        "n_datasets" : 1,
+        "proteins_data_path": " ",
+        "gen_PC_path": " ",
+        "covariates_data_path" : " ",
+        "unique_dataset_path" : "/group/diangelantonio/users/alessia_mapelli/pQTL/INTERVAL/INTERVAL_full_final.txt",
+        "n_start_prot": 35,
+        "n_end_prot": 7180,
+        "id_cols" : ["FID", "IID"],
+        "results_path": "/exchange/healthds/pQTL/INTERVAL/",
+        "results_filename": "INTERVAL_NonImp_residuals_new_AM",
+        "add_suffix": 1,
+        "model_definition": "~ agePulse + sex + difftime + process_month + PC1+PC2+PC3+PC4+PC5+PC6+PC7+PC8+PC9+PC10"
+        
+    }
+    
+}
