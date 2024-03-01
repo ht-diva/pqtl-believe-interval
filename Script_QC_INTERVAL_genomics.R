@@ -229,7 +229,7 @@ snp_writeBed(obj.bigsnp2, bedfile = "/group/diangelantonio/users/alessia_mapelli
 # plink2 --bfile $SRC_DIR/merged_imputation_PC_pcaaapt --king-cutoff 0.0441941738241592 --out $OUT_DIR/related
 # plink2 --bfile $SRC_DIR/merged_imputation_PC_pcaaapt --keep-fam $OUT_DIR/related.king.cutoff.in.id --make-bed --out $OUT_DIR/merged_imputation_PC_pcaaapt_rel                                                                
 
-obj.bed <- bed("/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5/merged_imputation_PC_pcaaapt_rel.bed")
+obj.bed <- bed("/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6/merged_imputation_PC_pcaaapt_rel.bed")
 # 9196 individuals
 
 ######## A.6.	Outliers for PCA
@@ -237,7 +237,7 @@ obj.bed <- bed("/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_s
 ###Computation of PCs without related individuals
 vobj.svd <- runonce::save_run(
   bed_autoSVD(obj.bed, k = 20, ind.row=ind.norel),
-  file = "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5/merged_imputation_PC_pcaaapt_removing_all.rds")
+  file = "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6/merged_imputation_PC_pcaaapt_removing_all.rds")
 dev.off()
 plot(vobj.svd)
 plot(vobj.svd, type = "scores", scores = 1:8, coeff = 0.5)
@@ -309,18 +309,18 @@ p<-ggplot(pca_all_int,aes(x=PC_3,y=PC_4, colour=prot_pres))+
 p
 
 
-
-############ Impute ancestry #################################################
+# ----------------------------------------------------------
+# IMPUTE ANCESTRY
 all_freq <- bigreadr::fread2(
   runonce::download_file(
-    "https://figshare.com/ndownloader/files/38019027",  # for the tutorial (46 MB)
-    # "https://figshare.com/ndownloader/files/31620968",  # for real analyses (849 MB)
+    # "https://figshare.com/ndownloader/files/38019027",  # for the tutorial (46 MB)
+    "https://figshare.com/ndownloader/files/31620968",  # for real analyses (849 MB)
     dir = "tmp-data", fname = "ref_freqs.csv.gz"))
 
 projection <- bigreadr::fread2(
   runonce::download_file(
-    "https://figshare.com/ndownloader/files/38019024",  # for the tutorial (44 MB)
-    # "https://figshare.com/ndownloader/files/31620953",  # for real analyses (847 MB)
+    # "https://figshare.com/ndownloader/files/38019024",  # for the tutorial (44 MB)
+    "https://figshare.com/ndownloader/files/31620953",  # for real analyses (847 MB)
     dir = "tmp-data", fname = "projection.csv.gz"))
 
 # coefficients to correct for overfitting of PCA
@@ -380,12 +380,13 @@ p
 
 PCs$imputed_anchestry <- as.factor(cluster)
 summary(PCs)
-save(PCs, file = "PCs_imputed_anc.Rda")
+save(PCs, file = "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6/PCs_imputed_anc.Rda")
 
-################ Exploit the anchestry in INTERVAL data #####################
+# ----------------------------------------------------------
+# Exploit the anchestry in INTERVAL data 
 anchestry <- read.csv('/processing_data/shared_datasets/plasma_proteome/interval/phenotypes/INTERVALdata_21DEC2022.csv')
 conversion <- read.csv('/processing_data/shared_datasets/plasma_proteome/interval/phenotypes/INTERVAL_OmicsMap_20221221.csv',)
-#load(file = '/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5/PCs_imputed_anc.Rda')
+#load(file = '/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6/PCs_imputed_anc.Rda')
 ethinic <- anchestry[,c(1,4)]
 table(is.na(ethinic$ethnicPulse))
 head(ethinic)
@@ -417,8 +418,8 @@ col[4] <- "true_anchestry_grouped"
 colnames(df_merge) <- col
 summary(df_merge)
 
-write.csv(df_merge, "PCs_all_anc.csv")
-save(df_merge, file = "PCs_all_anc.Rda")
+write.csv(df_merge, "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6/PCs_all_anc.csv")
+save(df_merge, file = "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6/PCs_all_anc.Rda")
 
 df_merge <- read.csv("PCs_all_anc.csv")
 
@@ -432,8 +433,8 @@ p
 
 table(df_merge$true_anchestry_grouped)
 
-PCs <- load("PCs_imputed_anc.Rda")
-##1. 2 outliers in PC1-2
+### Remove 2 outliers in PC1-2
+PCs <- load("/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6/PCs_imputed_anc.Rda")
 outliers_anc<-PCs[PCs$imputed_anchestry=='Middle East',c("FID","IID")]
 no_outliers_anc<-PCs[!PCs$imputed_anchestry=='Middle East',c("FID","IID")]
 length(outliers_anc$IID)
@@ -444,8 +445,8 @@ plot(PCs_WO$PC1,PCs_WO$PC2)
 plot(PCs_WO$PC3,PCs_WO$PC4)
 
 ##save list of samples to keep and outliers
-write.table(outliers_anc, "ind.outliers.PC.txt", sep = "\t", quote = FALSE, row.names = FALSE)
-write.table(no_outliers_anc, "final_sample_ids.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+write.table(outliers_anc, "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6/ind.outliers.PC.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+write.table(no_outliers_anc, "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6/final_sample_ids.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 
                                                                 
 
