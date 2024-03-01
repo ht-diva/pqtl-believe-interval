@@ -556,6 +556,10 @@ obj.bed<-snp_readBed("/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVA
 ##after first time, use instead snp_attach
 obj.bigsnp<-snp_attach("/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepC/cleaned_genotype_INTERVAL.rds")
 #####
+IID<-as.factor(obj.bigsnp$fam$sample.ID)
+text_file_sample <- data.frame(IID)
+write.table(text_file_sample, "final_sample_ids.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
 
 
 ##filter out some variants that are highly associated with population structure, e.g. as performed in the UK Biobank (Bycroft et al., 2018).##
@@ -639,11 +643,6 @@ snp_writeBed(obj.bigsnp2, bedfile = "/group/diangelantonio/users/alessia_mapelli
              ind.row = ind.norel, ind.col = ind_keep)
 
 
-## Check with Plink2 that does the same and remove the 59 individuals
-# obj.bed <- bed("/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5/merged_imputation_PC_pcaaapt_rel.bed")
-# 9196 individuals
-
-##################
 ###Computation of PCs without these individuals
 vobj.svd <- runonce::save_run(
   bed_autoSVD(obj.bed, k = 20, ind.row=ind.norel),
@@ -703,7 +702,7 @@ p<-ggplot(PCs,aes(x=PC1,y=PC2, colour=rel))+
   geom_point()
 p
 
-write.csv(PCs, file = "PCs_rel.csv", row.names=FALSE)
+write.csv(PCs, file = "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepC/PCs_rel.csv", row.names=FALSE)
 
 # ----------------------------------------------------------
 # COMPARE TO THOSE COMPUTED ON THE WHOLE POP
@@ -722,18 +721,18 @@ p<-ggplot(pca_all_int,aes(x=PC_3,y=PC_4, colour=prot_pres))+
 p
 
 
-
-############ Impute ancestry #################################################
+# ----------------------------------------------------------
+# Impute ancestry
 all_freq <- bigreadr::fread2(
   runonce::download_file(
-    "https://figshare.com/ndownloader/files/38019027",  # for the tutorial (46 MB)
-    # "https://figshare.com/ndownloader/files/31620968",  # for real analyses (849 MB)
+    # "https://figshare.com/ndownloader/files/38019027",  # for the tutorial (46 MB)
+    "https://figshare.com/ndownloader/files/31620968",  # for real analyses (849 MB)
     dir = "tmp-data", fname = "ref_freqs.csv.gz"))
 
 projection <- bigreadr::fread2(
   runonce::download_file(
-    "https://figshare.com/ndownloader/files/38019024",  # for the tutorial (44 MB)
-    # "https://figshare.com/ndownloader/files/31620953",  # for real analyses (847 MB)
+    # "https://figshare.com/ndownloader/files/38019024",  # for the tutorial (44 MB)
+    "https://figshare.com/ndownloader/files/31620953",  # for real analyses (847 MB)
     dir = "tmp-data", fname = "projection.csv.gz"))
 
 # coefficients to correct for overfitting of PCA
@@ -768,7 +767,7 @@ all_sq_dist <- apply(all_centers, 1, function(one_center) {
   rowSums(sweep(all_proj, 2, one_center, '-')^2)
 })
 
-THR <- 0.001  # you can adjust this threshold
+THR <- 0.005  # you can adjust this threshold
 thr_sq_dist <- max(dist(all_centers)^2) * THR / 0.16
 
 group <- colnames(all_freq)[-(1:5)]
@@ -780,7 +779,7 @@ cluster <- apply(all_sq_dist, 1, function(sq_dist) {
   if (sq_dist[ind] < thr_sq_dist) group[ind] else NA
 })
 
-table(cluster, exclude = NULL)  # 209 NA
+table(cluster, exclude = NULL)  
 
 p<-ggplot(PCs,aes(x=PC1,y=PC2, colour=cluster))+
   geom_point()
@@ -793,13 +792,14 @@ p
 
 PCs$imputed_anchestry <- as.factor(cluster)
 summary(PCs)
-save(PCs, file = "PCs_imputed_anc.Rda")
-write.csv(PCs, file = "PCs_imputed_anc.csv", row.names=FALSE)
+save(PCs, file = "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepC/PCs_imputed_anc.Rda")
+write.csv(PCs, file = "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepC/PCs_imputed_anc.csv", row.names=FALSE)
 
-################ Exploit the anchestry in INTERVAL data #####################
+# ----------------------------------------------------------
+# Exploit the anchestry in INTERVAL data
 anchestry <- read.csv('/processing_data/shared_datasets/plasma_proteome/interval/phenotypes/INTERVALdata_21DEC2022.csv')
 conversion <- read.csv('/processing_data/shared_datasets/plasma_proteome/interval/phenotypes/INTERVAL_OmicsMap_20221221.csv',)
-#load(file = '/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5/PCs_imputed_anc.Rda')
+
 ethinic <- anchestry[,c(1,4)]
 table(is.na(ethinic$ethnicPulse))
 head(ethinic)
@@ -814,9 +814,9 @@ summary(PCs)
 conversion <- conversion %>% drop_na(Affymetrix_gwasQC_bl)
 gen_ids_conv <- as.factor(conversion$Affymetrix_gwasQC_bl)
 gen_ids <- as.factor(PCs$FID)
-common_gen_ids <- Reduce(intersect, list(levels(gen_ids),levels(gen_ids_conv))) #9255
+common_gen_ids <- Reduce(intersect, list(levels(gen_ids),levels(gen_ids_conv))) 
 
-common_ids <- conversion[conversion$Affymetrix_gwasQC_bl %in% as.numeric(common_gen_ids),] #9255
+common_ids <- conversion[conversion$Affymetrix_gwasQC_bl %in% as.numeric(common_gen_ids),] 
 common_ids <- common_ids[c(1,4)]
 df_merge <- merge(common_ids,ethinic,by="identifier")
 df_merge$Affymetrix_gwasQC_bl <- as.factor(df_merge$Affymetrix_gwasQC_bl)
@@ -831,10 +831,10 @@ col[4] <- "true_anchestry_grouped"
 colnames(df_merge) <- col
 summary(df_merge)
 
-write.csv(df_merge, "PCs_all_anc.csv")
-save(df_merge, file = "PCs_all_anc.Rda")
+write.csv(df_merge, "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepC/PCs_all_anc.csv")
+save(df_merge, file = "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepC/PCs_all_anc.Rda")
 
-df_merge <- read.csv("PCs_all_anc.csv")
+df_merge <- read.csv("/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepC/PCs_all_anc.csv")
 
 p<-df_merge %>% filter(!true_anchestry_grouped == "Eng/W/Scot/NI/Brit") %>% ggplot(aes(x=PC3,y=PC4, colour=true_anchestry_grouped))+
   geom_point() + scale_color_brewer(palette="Paired")
