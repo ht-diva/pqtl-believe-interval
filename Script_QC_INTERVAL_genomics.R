@@ -511,7 +511,7 @@ sum_keeped_over_thr
 
 
 
-######## C.1. Imputed pgen in PLINK
+######## C.1-2. Imputed pgen and bgen in PLINK
 # SRC_DIR=/processing_data/shared_datasets/plasma_proteome/interval/genotypes/imputed/pgen
 # OUT_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepC
 # ID_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepB/SummaryQC/
@@ -523,14 +523,13 @@ sum_keeped_over_thr
 # --not-chr X Y XY \
 # --geno 0.1 \
 # --mind 0.1 \
-# --mac 20 \
+# --mac 10 \
 # --hwe 1e-15 \
 # --make-pgen \
 # --out $OUT_DIR/pgen/cleaned_imputed_INTERVAL_chr_${i}
 # done
 
-# source /center/healthds/singularity_functions
-# cd $HOME
+
 # SRC_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepC/pgen
 # OUT_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepC
 # for i in $(seq 1 22); do
@@ -541,20 +540,7 @@ sum_keeped_over_thr
 # plink2 --vcf $OUT_DIR/vcf/allchromosomes.vcf.gz --make-pgen --out $OUT_DIR/pgen/allchromosomes_imputed
 # plink2 --pfile $OUT_DIR/pgen/allchromosomes_imputed --keep $OUT_DIR/final_sample_ids.txt --make-pgen --out $OUT_DIR/pgen/allchromosomes_imputed_res
 # plink2 --pfile $OUT_DIR/pgen/allchromosomes_imputed_res --pgen-info
-
-
-######## C.2. Imputed bgen in PLINK
-# OUT_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepC
-# for i in $(seq 1 22); do
-# plink2 \
-# --pfile $OUT_DIR/pgen/cleaned_imputed_INTERVAL_chr_${i} \
-# --export bgen-1.2 \
-# --out $OUT_DIR/bgen/cleaned_imputed_INTERVAL_chr_${i}
-# done
-# plink2 \
-# --pfile $OUT_DIR/pgen/allchromosomes_imputed_res \
-# --export bgen-1.2 \
-# --out $OUT_DIR/bgen/allchromosomes_imputed_res
+# plink2 --pfile $OUT_DIR/pgen/allchromosomes_imputed_res --export bgen-1.2 --out $OUT_DIR/bgen/allchromosomes_imputed_res
 
 ###### D. Compute the first 20 PCs
 setwd("/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepC")
