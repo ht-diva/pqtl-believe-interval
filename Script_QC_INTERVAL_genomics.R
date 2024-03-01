@@ -460,37 +460,34 @@ write.table(no_outliers_anc, "/group/diangelantonio/users/alessia_mapelli/QC_gen
 # qctool -g $OUT_DIR/chr${i}.bgen -snp-stats -osnp $OUT_DIR/snp-stats_chr${i}.txt
 #done
 
-######## B.2. o	Exclude variants with --mac 20 --hwe 1e-15 info_score > 0.7
+######## B.2. Exclude variants with info_score < 0.7
 path_to_snpstat_new <- "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepB/pgen_restricted_sample"
 path_to_save <- "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepB/SummaryQC"
-intital_n_var <- 0
 sum_keeped <- 0
 sum_keeped_over_thr <- 0
-i <-1
 for(i in seq(1,22)){
   chr <- paste("snp-stats_chr",i,".txt", sep="")
-  chr_old <- read.table(paste(path_to_snpstat, "/impute_", i,"_interval.snpstats", sep= ""), header = T)
-  intital_n_var <- intital_n_var + dim(chr_old)[1]
   info <- read.table(paste(path_to_snpstat_new, chr, sep= "/"), header = T)
-  summary(info)
-  #save_png <- paste("snp-stats_chr",i,".png", sep="")
-  #png(file=paste(path_to_save, save_png, sep= "/"),
-  #    width=600, height=350)
-  #plot(density(info$info), type="l", main=paste("Density info score CHR ", i, sep=""))
-  #dev.off()
+  #summary(info)
+  save_png <- paste("snp-stats_chr",i,".png", sep="")
+  png(file=paste(path_to_save, save_png, sep= "/"),
+      width=600, height=350)
+  plot(density(info$info), type="l", main=paste("Density info score CHR ", i, sep=""))
+  dev.off()
   sum_keeped <- sum_keeped + dim(info)[1]
-  #chr_keeped_under_0.7 <- info[info$info < 0.7, c(2,14,17)]
-  #write.table(chr_keeped_under_0.7, file=paste(path_to_save, "/keeped_under_0.7_chr_", i, sep= ""), row.names = FALSE)
+  chr_keeped_under_0.7 <- info[info$info < 0.7, c(2,14,17)]
+  write.table(chr_keeped_under_0.7, file=paste(path_to_save, "/keeped_under_0.7_chr_", i, sep= ""), row.names = FALSE)
   sum_keeped_over_thr <- sum_keeped_over_thr + dim(info[info$info > 0.7, ])[1]
-  #write.table(info[info$info > 0.7, ], file=paste(path_to_save, "/keeped_over_0.7_chr_", i, sep= ""), row.names = FALSE)
-  #write.table(info, file=paste(path_to_save, "/keeped_snp_chr_", i, sep= ""), row.names = FALSE)
-  #write.table(info$rsid, file=paste(path_to_save, "/snp_id_chr_", i, sep= ""), row.names = FALSE , col.names = F)
-  write.table(info[info$info > 0.7, ]$rsid, file=paste(path_to_save, "/keeped_snp_over_0.7_chr_", i, sep= ""), row.names = FALSE, col.names = F,quote=F)
-  
+  write.table(info[info$info > 0.7, ], file=paste(path_to_save, "/keeped_over_0.7_chr_", i, sep= ""), row.names = FALSE)
+  write.table(info, file=paste(path_to_save, "/keeped_snp_chr_", i, sep= ""), row.names = FALSE)
+  write.table(info$rsid, file=paste(path_to_save, "/snp_id_chr_", i, sep= ""), row.names = FALSE , col.names = F)
+  write.table(info[info$info > 0.7, ]$rsid, file=paste(path_to_save, "/keeped_snp_over_0.7_chr_", i, sep= ""), row.names = FALSE, col.names = F)
+   
 }
-c(intital_n_var,sum_keeped,sum_keeped_over_thr)
-write.table(c(intital_n_var,sum_keeped,sum_keeped_over_thr), file=paste(path_to_save, "/snps_count", sep= ""), row.names = FALSE, col.names = F)
+sum_keeped
+sum_keeped_over_thr
 
+                                                                
 ######## C. Preparation of the final dataset
 
 ######## C.3. Genotype files in PLINK
