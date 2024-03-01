@@ -494,12 +494,13 @@ sum_keeped_over_thr
 # SRC_DIR=/processing_data/shared_datasets/plasma_proteome/interval/genotypes
 # OUT_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepC
 # ID_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step1/Common_ID/
-#   FAM_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step3
+# FAM_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step3
 # 
 # 
 # plink2 \
 # --bfile $SRC_DIR/merged_imputation \
 # --keep-fam $FAM_DIR/merged_imputation_restricted_no_het_out.fam \
+# --remove  $OUT_DIR/ind.outliers.PC.txt \
 # --not-chr X Y XY \
 # --geno 0.1 \
 # --mind 0.1 \
