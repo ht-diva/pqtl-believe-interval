@@ -228,7 +228,8 @@ snp_writeBed(obj.bigsnp2, bedfile = "/group/diangelantonio/users/alessia_mapelli
 # OUT_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6
 # plink2 --bfile $SRC_DIR/merged_imputation_PC_pcaaapt --king-cutoff 0.0441941738241592 --out $OUT_DIR/related
 # plink2 --bfile $SRC_DIR/merged_imputation_PC_pcaaapt --keep-fam $OUT_DIR/related.king.cutoff.in.id --make-bed --out $OUT_DIR/merged_imputation_PC_pcaaapt_rel                                                                
-# obj.bed <- bed("/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5/merged_imputation_PC_pcaaapt_rel.bed")
+
+obj.bed <- bed("/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5/merged_imputation_PC_pcaaapt_rel.bed")
 # 9196 individuals
 
 ######## A.6.	Outliers for PCA
