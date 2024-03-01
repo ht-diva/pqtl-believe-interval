@@ -333,7 +333,6 @@ matched <- obj.bed$map %>%
   mutate(beta = 1) %>%
   snp_match(all_freq[1:5], match.min.prop= 0.11) %>%
   print()
-# <0.15 matched
 
 # further subsetting on missing values
 counts <- bed_counts(obj.bed, ind.col = matched$`_NUM_ID_.ss`)
@@ -355,7 +354,7 @@ all_sq_dist <- apply(all_centers, 1, function(one_center) {
   rowSums(sweep(all_proj, 2, one_center, '-')^2)
 })
 
-THR <- 0.001  # you can adjust this threshold
+THR <- 0.005  # you can adjust this threshold
 thr_sq_dist <- max(dist(all_centers)^2) * THR / 0.16
 
 group <- colnames(all_freq)[-(1:5)]
@@ -367,7 +366,7 @@ cluster <- apply(all_sq_dist, 1, function(sq_dist) {
   if (sq_dist[ind] < thr_sq_dist) group[ind] else NA
 })
 
-table(cluster, exclude = NULL)  # 209 NA
+table(cluster, exclude = NULL)
 
 p<-ggplot(PCs,aes(x=PC1,y=PC2, colour=cluster))+
   geom_point()
@@ -434,7 +433,7 @@ p
 table(df_merge$true_anchestry_grouped)
 
 ### Remove 2 outliers in PC1-2
-PCs <- load("/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6/PCs_imputed_anc.Rda")
+load("/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6/PCs_imputed_anc.Rda")
 outliers_anc<-PCs[PCs$imputed_anchestry=='Middle East',c("FID","IID")]
 no_outliers_anc<-PCs[!PCs$imputed_anchestry=='Middle East',c("FID","IID")]
 length(outliers_anc$IID)
