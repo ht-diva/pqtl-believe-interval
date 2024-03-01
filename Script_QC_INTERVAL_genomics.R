@@ -24,6 +24,13 @@ if (!require("BiocManager", quietly = TRUE))
 
 BiocManager::install("snpStats")
 
+######## STEP 0 - check the initial datasets
+#SRC_DIR=/processing_data/shared_datasets/plasma_proteome/interval/genotypes
+#SRC_DIR_PGEN=/processing_data/shared_datasets/plasma_proteome/interval/genotypes/imputed/pgen
+#OUT_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step1
+#plink2 --bfile $SRC_DIR/interval_qced_24.8.18 --freq --out $OUT_DIR/general_info_geno_qced
+#plink2 --bfile $SRC_DIR/merged_imputation.bed -freq --out $OUT_DIR/general_info_geno
+#plink2 --pfile $SRC_DIR_PGEN/impute_dedup_1_interval --pgen-info
 
 
 ######## A.1. Compute common ID with proteomics dataset
@@ -59,7 +66,7 @@ common_ids <- id_conversion[id_conversion$Soma7000_RAW %in% as.numeric(common_pr
 common_ids$Affymetrix_gwasQC_bl <- as.character(common_ids$Affymetrix_gwasQC_bl)
 
 
-# set samples to exclude
+# set samples to exclude to to drop out
 extra_ids = c('110017048382', '110016204883' ,'110008981087')
 
 # exclude samples
@@ -90,7 +97,7 @@ write.table(common_ids$Affymetrix_gwasQC_bl, "/group/diangelantonio/users/alessi
 #SRC_DIR=/processing_data/shared_datasets/plasma_proteome/interval/genotypes/imputed/pgen
 #OUT_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step1/Common_ID/
 #list=$(ls $SRC_DIR/*.pgen)
-#for i in $(seq 2 22); do
+#for i in $(seq 1 22); do
 # plink2 --pfile $SRC_DIR/impute_dedup_${i}_interval --keep-fam $OUT_DIR/common_ID.txt --make-pgen --out $OUT_DIR/pgen/chr${i}
 #done
 
