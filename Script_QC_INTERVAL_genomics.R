@@ -421,7 +421,7 @@ summary(df_merge)
 write.csv(df_merge, "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6/PCs_all_anc.csv")
 save(df_merge, file = "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6/PCs_all_anc.Rda")
 
-df_merge <- read.csv("PCs_all_anc.csv")
+df_merge <- read.csv("/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6/PCs_all_anc.csv")
 
 p<-df_merge %>% filter(!true_anchestry_grouped == "Eng/W/Scot/NI/Brit") %>% ggplot(aes(x=PC3,y=PC4, colour=true_anchestry_grouped))+
   geom_point() + scale_color_brewer(palette="Paired")
