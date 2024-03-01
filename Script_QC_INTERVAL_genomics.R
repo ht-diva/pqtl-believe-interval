@@ -229,7 +229,7 @@ snp_writeBed(obj.bigsnp2, bedfile = "/group/diangelantonio/users/alessia_mapelli
 # plink2 --bfile $SRC_DIR/merged_imputation_PC_pcaaapt --king-cutoff 0.0441941738241592 --out $OUT_DIR/related
 # plink2 --bfile $SRC_DIR/merged_imputation_PC_pcaaapt --keep-fam $OUT_DIR/related.king.cutoff.in.id --make-bed --out $OUT_DIR/merged_imputation_PC_pcaaapt_rel                                                                
 
-obj.bed <- bed("/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6/merged_imputation_PC_pcaaapt_rel.bed")
+# obj.bed <- bed("/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6/merged_imputation_PC_pcaaapt_rel.bed")
 # 9196 individuals
 
 ######## A.6.	Outliers for PCA
@@ -455,7 +455,6 @@ write.table(no_outliers_anc, "/group/diangelantonio/users/alessia_mapelli/QC_gen
 #OUT_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepB/pgen_restricted_sample
 #FAM_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6
 #SRC_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step1/Common_ID/pgen
-
 #for i in $(seq 1 22); do
 # plink2 --pfile $SRC_DIR/chr${i} --threads 16 --memory 16384 --keep-fam $FAM_DIR/merged_imputation_PC_pcaaapt_rel.fam --export bgen-1.2 --out $OUT_DIR/chr${i}
 # qctool -g $OUT_DIR/chr${i}.bgen -snp-stats -osnp $OUT_DIR/snp-stats_chr${i}.txt
