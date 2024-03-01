@@ -178,15 +178,15 @@ plot(obj.pcadapt, type = "Q-Q")
 length(ind_keep <- ind_chip[predict(obj.pcadapt, log10 = FALSE) > 0.05])
 obj.bigsnp2 <- obj.bigsnp
 ##save the bed object without the variants associated to Pop
-snp_writeBed(obj.bigsnp2, bedfile = "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5/merged_imputation_PC_pcaaapt.bed", 
+snp_writeBed(obj.bigsnp2, bedfile = "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6/merged_imputation_PC_pcaaapt.bed", 
              ind.col = ind_keep)
 obj.bigsnp$fam$sample.ID <- as.character(obj.bigsnp$fam$sample.ID)
 
 # Compute the relatedness without these variants
 rel <- runonce::save_run(
-  snp_plinkKINGQC(path_to_plink, bedfile.in = "//group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5/merged_imputation_PC_pcaaapt.bed",
+  snp_plinkKINGQC(path_to_plink, bedfile.in = "//group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6/merged_imputation_PC_pcaaapt.bed",
                   thr.king = 2^-4.5, make.bed = FALSE, ncores =nc),
-  file = "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5/merged_imputation_PC_pcaaapt_rel.rds"
+  file = "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6/merged_imputation_PC_pcaaapt_rel.rds"
 )
 dim(rel)  
 hist(rel$KINSHIP, breaks = 100); abline(v = 2^-(1.5:4.5), col = "red")
@@ -207,10 +207,6 @@ rel_ids <- as.character(as.numeric(rel3$IID))
 is_rel <- sample_ids %in% rel_ids
 sum(!is_rel)  # 9196
 ind_to_keep<-which(!is_rel)
-#obj.bed <- bed("/group/diangelantonio/users/Solene/pQTL/Solene_Believe_test/BELIEVE_genotype_forPCs_123456_HWE15.bed")
-# # obj.bed2 <- bed("/center/healthds/pQTL/Solene_Believe_test/BELIEVE_genotype_1234567_norel.bed")
-# id<-obj.bed$fam$sample.ID[ind_to_keep]
-# genid_subset_norel<-substr(id,19,27)
 
 #########
 #Remove all pairs of related individuals
@@ -223,11 +219,15 @@ ind.norel <- rows_along(obj.bed)[-ind.rel]
 length(ind.norel) #9138
 head(ind.norel)
 
-snp_writeBed(obj.bigsnp2, bedfile = "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5/merged_imputation_PC_pcaaapt_norel_r.bed", 
+snp_writeBed(obj.bigsnp2, bedfile = "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6/merged_imputation_PC_pcaaapt_norel_r.bed", 
              ind.row = ind.norel, ind.col = ind_keep)
 
 
 ## Check with Plink2 that does the same and remove the 59 individuals
+# SRC_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6
+# OUT_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6
+# plink2 --bfile $SRC_DIR/merged_imputation_PC_pcaaapt --king-cutoff 0.0441941738241592 --out $OUT_DIR/related
+# plink2 --bfile $SRC_DIR/merged_imputation_PC_pcaaapt --keep-fam $OUT_DIR/related.king.cutoff.in.id --make-bed --out $OUT_DIR/merged_imputation_PC_pcaaapt_rel                                                                
 # obj.bed <- bed("/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5/merged_imputation_PC_pcaaapt_rel.bed")
 # 9196 individuals
 
