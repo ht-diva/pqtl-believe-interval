@@ -621,7 +621,7 @@ hist(rel2$sum_K, breaks = 100)
 sample_ids <- as.character(obj.bigsnp$fam$sample.ID)
 rel_ids <- as.character(as.numeric(rel3$IID))
 is_rel <- sample_ids %in% rel_ids
-sum(!is_rel)  # 9196
+sum(!is_rel)  # 9192
 ind_to_keep<-which(!is_rel)
 #obj.bed <- bed("/group/diangelantonio/users/Solene/pQTL/Solene_Believe_test/BELIEVE_genotype_forPCs_123456_HWE15.bed")
 # # obj.bed2 <- bed("/center/healthds/pQTL/Solene_Believe_test/BELIEVE_genotype_1234567_norel.bed")
@@ -633,10 +633,10 @@ ind_to_keep<-which(!is_rel)
 ind.rel <- match(c(rel$IID1, rel$IID2), obj.bed$fam$sample.ID)
 
 head(ind.rel)
-length(ind.rel) #120, unique 115
+length(ind.rel) #120
 
 ind.norel <- rows_along(obj.bed)[-ind.rel]
-length(ind.norel) #9138
+length(ind.norel) #9136
 head(ind.norel)
 
 snp_writeBed(obj.bigsnp2, bedfile = "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepC/cleaned_genotype_INTERVA_pcaaapt_norel_r.bed", 
