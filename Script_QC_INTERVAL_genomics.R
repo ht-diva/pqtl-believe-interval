@@ -456,7 +456,7 @@ write.table(no_outliers_anc, "/group/diangelantonio/users/alessia_mapelli/QC_gen
 #FAM_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6
 #SRC_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step1/Common_ID/pgen
 #for i in $(seq 1 22); do
-# plink2 --pfile $SRC_DIR/chr${i} --threads 16 --memory 16384 --keep-fam $FAM_DIR/merged_imputation_PC_pcaaapt_rel.fam --export bgen-1.2 --out $OUT_DIR/chr${i}
+# plink2 --pfile $SRC_DIR/chr${i} --threads 16 --memory 16384 --mac 20 --hwe 1e-15 --geno 0.1 --mind 0.1 --keep-fam $FAM_DIR/merged_imputation_PC_pcaaapt_rel.fam --export bgen-1.2 --out $OUT_DIR/chr${i}
 # qctool -g $OUT_DIR/chr${i}.bgen -snp-stats -osnp $OUT_DIR/snp-stats_chr${i}.txt
 #done
 
