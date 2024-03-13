@@ -447,10 +447,42 @@ plot(PCs_WO$PC3,PCs_WO$PC4)
 write.table(outliers_anc, "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6/ind.outliers.PC.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 write.table(no_outliers_anc, "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6/final_sample_ids.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 
+######## B. Preparation of the final dataset
+
+######## B.1. Genotype files in PLINK
+# SRC_DIR=/processing_data/shared_datasets/plasma_proteome/interval/genotypes
+# OUT_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepC
+# ID_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step1/Common_ID/
+# FAM_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step3
+# 
+# 
+# plink2 \
+# --bfile $SRC_DIR/merged_imputation \
+# --keep-fam $FAM_DIR/merged_imputation_restricted_no_het_out.fam \
+# --remove  $OUT_DIR/ind.outliers.PC.txt \
+# --not-chr X Y XY \
+# --geno 0.1 \
+# --mind 0.1 \
+# --mac 20 \
+# --hwe 1e-15 \
+# --make-bed \
+# --out $OUT_DIR/cleaned_genotype_INTERVAL                                                              
+
+######## C.	Variants with low imputation quality
+
+######## C.1.	Recode each of the pgen id from rsid to chr:pos:A1:A2 to handle multiallelic varinats and repeated rsids
+# https://github.com/ht-diva/genomics_QC_pipeline -> /exchange/healthds/pQTL/INTERVAL/Genetic_QC_files/pgen/impute_dedup_recoded_${i}
+
+######## C.2. Select for each pgen the sample in the final genotype file 	
+# source /center/healthds/singularity_functions
+# OUT_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepB/New_analysis/files/recoded
+# FAM_DIR=/exchange/healthds/pQTL/INTERVAL/Genetic_QC_files
+# SRC_DIR=/exchange/healthds/pQTL/INTERVAL/Genetic_QC_files/pgen
+#for i in $(seq 1 22); do
+#    plink2 --pfile $SRC_DIR/impute_dedup_recoded_${i} --keep-fam $FAM_DIR/cleaned_genotype_INTERVAL.fam --mind 0.1 --make-pgen --out $OUT_DIR/pgen_selected_sample_chr${i}
+#done
+
                                                                 
-
-######## B.	Variants with low imputation quality
-
 ######## B.1. Recompute summary metrics within the sample with proteomics data in PLINK
 #OUT_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepB/pgen_restricted_sample
 #FAM_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6
@@ -486,29 +518,6 @@ for(i in seq(1,22)){
 }
 sum_keeped
 sum_keeped_over_thr
-
-                                                                
-######## C. Preparation of the final dataset
-
-######## C.3. Genotype files in PLINK
-# SRC_DIR=/processing_data/shared_datasets/plasma_proteome/interval/genotypes
-# OUT_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepC
-# ID_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step1/Common_ID/
-# FAM_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step3
-# 
-# 
-# plink2 \
-# --bfile $SRC_DIR/merged_imputation \
-# --keep-fam $FAM_DIR/merged_imputation_restricted_no_het_out.fam \
-# --remove  $OUT_DIR/ind.outliers.PC.txt \
-# --not-chr X Y XY \
-# --geno 0.1 \
-# --mind 0.1 \
-# --mac 20 \
-# --hwe 1e-15 \
-# --make-bed \
-# --out $OUT_DIR/cleaned_genotype_INTERVAL
-
 
 
 ######## C.1-2. Imputed pgen and bgen in PLINK
