@@ -540,14 +540,14 @@ write.table(sum, file=paste(path_to_save, "/snps_count", sep= ""), row.names = F
 
 ######## C.6. Extact variants with info_score > 0.7 and compute final imputed files
 # SRC_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepB/New_analysis/files/recoded
-# OUT_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepB/New_analysis
+# OUT_DIR=/exchange/healthds/pQTL/INTERVAL/Genetic_QC_files
 # ID_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepB/New_analysis/Variants_QC/recoded
 # for i in $(seq 1 22); do
 # plink2 \
 #     --pfile $SRC_DIR/pgen_selected_sample_filtered_var_chr${i} \
 #     --extract $ID_DIR/keeped_snp_over_0.7_chr_${i} \
 #     --make-pgen \
-#     --out $OUT_DIR/pgen/recoded/cleaned_imputed_INTERVAL_chr_${i}
+#     --out $OUT_DIR/cleaned_imputed_INTERVAL_chr_${i}
 # done
 
 ###### D. Compute the first 20 PCs
