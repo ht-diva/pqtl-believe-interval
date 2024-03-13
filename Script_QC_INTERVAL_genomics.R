@@ -93,15 +93,7 @@ write.table(common_ids$Affymetrix_gwasQC_bl, "/group/diangelantonio/users/alessi
 #plink2 --bfile $SRC_DIR/interval_qced_24.8.18 --keep-fam $OUT_DIR/common_ID.txt --make-bed --out $OUT_DIR/interval_qced_24.8.18_restricted
 #plink2 --bfile $SRC_DIR/merged_imputation --keep-fam $OUT_DIR/common_ID.txt --make-bed --out $OUT_DIR/merged_imputation_restricted
 
-######## A.1. Extract common ID in imputed files in PLINK
-#SRC_DIR=/processing_data/shared_datasets/plasma_proteome/interval/genotypes/imputed/pgen
-#OUT_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step1/Common_ID/
-#list=$(ls $SRC_DIR/*.pgen)
-#for i in $(seq 1 22); do
-# plink2 --pfile $SRC_DIR/impute_dedup_${i}_interval --keep-fam $OUT_DIR/common_ID.txt --make-pgen --out $OUT_DIR/pgen/chr${i}
-#done
-
-######## A.3. Compute heterozigosity in PLINK
+######## A.2. Compute heterozigosity in PLINK
 #SRC_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step1/Common_ID
 #OUT_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step3
 #plink2 --bfile $SRC_DIR/merged_imputation_restricted --missing --out $OUT_DIR/missing_info
@@ -447,11 +439,11 @@ plot(PCs_WO$PC3,PCs_WO$PC4)
 write.table(outliers_anc, "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6/ind.outliers.PC.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 write.table(no_outliers_anc, "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6/final_sample_ids.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 
-######## B. Preparation of the final dataset
+######## B. Preparation of the final genotype (bed) dataset
 
 ######## B.1. Genotype files in PLINK
 # SRC_DIR=/processing_data/shared_datasets/plasma_proteome/interval/genotypes
-# OUT_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepC
+# OUT_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepC                                                              
 # ID_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step1/Common_ID/
 # FAM_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step3
 # 
@@ -466,7 +458,7 @@ write.table(no_outliers_anc, "/group/diangelantonio/users/alessia_mapelli/QC_gen
 # --mac 20 \
 # --hwe 1e-15 \
 # --make-bed \
-# --out $OUT_DIR/cleaned_genotype_INTERVAL                                                              
+# --out /exchange/healthds/pQTL/INTERVAL/Genetic_QC_files/cleaned_genotype_INTERVAL                                                              
 
 ######## C.	Variants with low imputation quality
 
