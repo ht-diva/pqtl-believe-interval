@@ -470,12 +470,17 @@ write.table(no_outliers_anc, "/group/diangelantonio/users/alessia_mapelli/QC_gen
 # OUT_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepB/New_analysis/files/recoded
 # FAM_DIR=/exchange/healthds/pQTL/INTERVAL/Genetic_QC_files
 # SRC_DIR=/exchange/healthds/pQTL/INTERVAL/Genetic_QC_files/pgen
-#for i in $(seq 1 22); do
+# for i in $(seq 1 22); do
 #    plink2 --pfile $SRC_DIR/impute_dedup_recoded_${i} --keep-fam $FAM_DIR/cleaned_genotype_INTERVAL.fam --mind 0.1 --make-pgen --out $OUT_DIR/pgen_selected_sample_chr${i}
-#done
+# done
 
-                                                                
-######## B.1. Recompute summary metrics within the sample with proteomics data in PLINK
+######## C.3. Filter the initial varaints to consider
+# SRC_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepB/New_analysis/files/recoded/
+# for i in $(seq 1 22); do
+#    plink2 --pfile $SRC_DIR/pgen_selected_sample_chr${i} --not-chr X Y XY --geno 0.1 --hwe 1e-15 --mac 10 --make-pgen --out $SRC_DIR/pgen_selected_sample_filtered_var_chr${i}
+# done
+                                                              
+######## C.4. Recompute summary metrics within the sample with proteomics data in PLINK
 #OUT_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepB/pgen_restricted_sample
 #FAM_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6
 #SRC_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step1/Common_ID/pgen
