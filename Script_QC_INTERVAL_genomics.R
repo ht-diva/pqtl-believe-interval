@@ -515,64 +515,40 @@ write.table(no_outliers_anc, "/group/diangelantonio/users/alessia_mapelli/QC_gen
 # -snp-stats \
 # -osnp "${stat_file}"
 
-######## C.5. Extact variants with info_score > 0.7
-path_to_snpstat_new <- "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepB/pgen_restricted_sample"
-path_to_save <- "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepB/SummaryQC"
-sum_keeped <- 0
+######## C.5. Save variants with info_score > 0.7
+if (!require("BiocManager", quietly = TRUE))
+install.packages("BiocManager")
+
+BiocManager::install("snpStats")
+
+path_to_snpstat <- "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepB/New_analysis/recomputed_stats/recoded"
+path_to_save <- "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepB/New_analysis/Variants_QC/recoded"
+intital_n_var <- 0
 sum_keeped_over_thr <- 0
+#i <-1
 for(i in seq(1,22)){
   chr <- paste("snp-stats_chr",i,".txt", sep="")
-  info <- read.table(paste(path_to_snpstat_new, chr, sep= "/"), header = T)
+  info <- read.table(paste(path_to_snpstat, chr, sep= "/"), header = T)
   #summary(info)
-  save_png <- paste("snp-stats_chr",i,".png", sep="")
-  png(file=paste(path_to_save, save_png, sep= "/"),
-      width=600, height=350)
-  plot(density(info$info), type="l", main=paste("Density info score CHR ", i, sep=""))
-  dev.off()
-  sum_keeped <- sum_keeped + dim(info)[1]
-  chr_keeped_under_0.7 <- info[info$info < 0.7, c(2,14,17)]
-  write.table(chr_keeped_under_0.7, file=paste(path_to_save, "/keeped_under_0.7_chr_", i, sep= ""), row.names = FALSE)
+  intital_n_var <- intital_n_var + dim(info)[1]
   sum_keeped_over_thr <- sum_keeped_over_thr + dim(info[info$info > 0.7, ])[1]
-  write.table(info[info$info > 0.7, ], file=paste(path_to_save, "/keeped_over_0.7_chr_", i, sep= ""), row.names = FALSE)
-  write.table(info, file=paste(path_to_save, "/keeped_snp_chr_", i, sep= ""), row.names = FALSE)
-  write.table(info$rsid, file=paste(path_to_save, "/snp_id_chr_", i, sep= ""), row.names = FALSE , col.names = F)
-  write.table(info[info$info > 0.7, ]$rsid, file=paste(path_to_save, "/keeped_snp_over_0.7_chr_", i, sep= ""), row.names = FALSE, col.names = F)
-   
+  write.table(info[info$info > 0.7,2], file=paste(path_to_save, "/keeped_snp_over_0.7_chr_", i, sep= ""), row.names = FALSE, col.names = F,quote=F)
 }
-sum_keeped
-sum_keeped_over_thr
+sum <- c("Starting number of SNPs" = intital_n_var,"Number of SNPs after QC" = sum_keeped_over_thr)
+write.table(sum, file=paste(path_to_save, "/snps_count", sep= ""), row.names = FALSE, col.names = T)
 
 
-######## C.1-2. Imputed pgen and bgen in PLINK
-# SRC_DIR=/processing_data/shared_datasets/plasma_proteome/interval/genotypes/imputed/pgen
-# OUT_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepC
-# ID_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepB/SummaryQC/
-#   for i in $(seq 1 22); do
-# plink2 \
-# --pfile $SRC_DIR/impute_dedup_${i}_interval \
-# --keep-fam $OUT_DIR/cleaned_genotype_INTERVAL.fam \
-# --extract $ID_DIR/keeped_snp_over_0.7_chr_${i} \
-# --not-chr X Y XY \
-# --geno 0.1 \
-# --mind 0.1 \
-# --mac 10 \
-# --hwe 1e-15 \
-# --make-pgen \
-# --out $OUT_DIR/pgen/cleaned_imputed_INTERVAL_chr_${i}
-# done
-
-
-# SRC_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepC/pgen
-# OUT_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepC
+######## C.6. Extact variants with info_score > 0.7 and compute final imputed files
+# SRC_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepB/New_analysis/files/recoded
+# OUT_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepB/New_analysis
+# ID_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepB/New_analysis/Variants_QC/recoded
 # for i in $(seq 1 22); do
-# plink2 --pfile $SRC_DIR/cleaned_imputed_INTERVAL_chr_${i} --recode vcf bgz id-paste=iid --out $OUT_DIR/vcf/chr$i
+# plink2 \
+#     --pfile $SRC_DIR/pgen_selected_sample_filtered_var_chr${i} \
+#     --extract $ID_DIR/keeped_snp_over_0.7_chr_${i} \
+#     --make-pgen \
+#     --out $OUT_DIR/pgen/recoded/cleaned_imputed_INTERVAL_chr_${i}
 # done
-# files=$(ls $OUT_DIR/vcf/*.vcf.gz)
-# bcftools concat $files -Oz -o $OUT_DIR/vcf/allchromosomes.vcf.gz
-# plink2 --vcf $OUT_DIR/vcf/allchromosomes.vcf.gz --make-pgen --out $OUT_DIR/pgen/allchromosomes_imputed
-# plink2 --pfile $OUT_DIR/pgen/allchromosomes_imputed --keep $OUT_DIR/final_sample_ids.txt --make-pgen --out $OUT_DIR/pgen/allchromosomes_imputed_res
-# plink2 --pfile $OUT_DIR/pgen/allchromosomes_imputed_res --pgen-info
-# plink2 --pfile $OUT_DIR/pgen/allchromosomes_imputed_res --export bgen-1.2 --out $OUT_DIR/bgen/allchromosomes_imputed_res
 
 ###### D. Compute the first 20 PCs
 setwd("/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepC")
