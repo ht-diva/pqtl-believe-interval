@@ -480,16 +480,42 @@ write.table(no_outliers_anc, "/group/diangelantonio/users/alessia_mapelli/QC_gen
 #    plink2 --pfile $SRC_DIR/pgen_selected_sample_chr${i} --not-chr X Y XY --geno 0.1 --hwe 1e-15 --mac 10 --make-pgen --out $SRC_DIR/pgen_selected_sample_filtered_var_chr${i}
 # done
                                                               
-######## C.4. Recompute summary metrics within the sample with proteomics data in PLINK
-#OUT_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepB/pgen_restricted_sample
-#FAM_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step5-6
-#SRC_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/Step1/Common_ID/pgen
-#for i in $(seq 1 22); do
-# plink2 --pfile $SRC_DIR/chr${i} --threads 16 --memory 16384 --mac 20 --hwe 1e-15 --geno 0.1 --mind 0.1 --keep-fam $FAM_DIR/merged_imputation_PC_pcaaapt_rel.fam --export bgen-1.2 --out $OUT_DIR/chr${i}
-# qctool -g $OUT_DIR/chr${i}.bgen -snp-stats -osnp $OUT_DIR/snp-stats_chr${i}.txt
-#done
+######## C.4. Recode to bgen and recompute summary metrics within the sample with proteomics data in PLINK
+#### lancher to parallelize jobs
+# JOBS_LIMIT=200
+# SRC_DIR=/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepB/New_analysis
 
-######## B.2. Exclude variants with info_score < 0.7
+# for i in $(seq 1 22); do
+#  while [ "$(squeue -u $USER |wc -l)" -ge "${JOBS_LIMIT}" ]; do
+		echo "Jobs limit reached, I sleep for a while";
+		sleep 240
+#	 done
+#  echo "Processing: chr_${i}"
+#  input_file=${SRC_DIR}/files/recoded/pgen_selected_sample_filtered_var_chr${i}
+#  bgen_out=${SRC_DIR}/files/recoded/bgen_selected_sample_filtered_var_chr${i}
+#  bgen_in=${SRC_DIR}/files/recoded/bgen_selected_sample_filtered_var_chr${i}.bgen
+#  stat_file=${SRC_DIR}/recomputed_stats/recoded/snp-stats_chr${i}.txt
+#  RES=$(sbatch --parsable "snp_stat_comp.sbatch" "${input_file}" "${bgen_out}" "${bgen_in}" "${stat_file}")
+#  echo "running job id: ${RES}"
+# done 
+                                                                
+#### sbatch file 
+# input_file=$1
+# bgen_out=$2
+# time plink2 \
+#  --pfile "${input_file}" \
+#  --threads 16 \
+#  --memory 16384 \
+#  --export bgen-1.2 \
+#  --out "${bgen_out}"
+# bgen_in=$3 
+# stat_file=$4
+# time qctool \
+# -g "${bgen_in}" \
+# -snp-stats \
+# -osnp "${stat_file}"
+
+######## C.5. Extact variants with info_score > 0.7
 path_to_snpstat_new <- "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepB/pgen_restricted_sample"
 path_to_save <- "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/QC_steps/StepB/SummaryQC"
 sum_keeped <- 0
