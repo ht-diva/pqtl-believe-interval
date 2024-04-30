@@ -1,17 +1,27 @@
 ############## This script reproduces parts of the pipeline to select covariates and inverse normalize the protein data, to create the phenotype file for Plink. 
 ############## TRIALS ON APRIL 16 2024
 ############## 
+args <- commandArgs(trailingOnly=TRUE)
+batch = as.character(args[1])
+
 # using phenotypes from Xiyun and following steps from here to prepare phenotypes: /exchange/healthds/pQTL/results/INTERVAL/residuals/prepare_residuals.R
 remove_ashk = FALSE
 transform = TRUE
 select_seqids = TRUE
-split_by_batch = FALSE
+residual = FALSE
+split_by_batch = TRUE
 
-if (selected_seqids) {
-message("Provide a list of seqids to consider")
-tested_seqid = c("seq.10708.3", "seq.4479.14")
+if (select_seqids) {
+	message("Provide a list of seqids to consider")
+	# tested_seqid = c("seq.10708.3", "seq.4479.14")
+	tested_seqids = c("seq.10361.25", "seq.10605.22", "seq.10708.3", "seq.11516.7", "seq.12618.50", "seq.14112.40", "seq.2780.35", "seq.2962.50", "seq.3815.14", "seq.3889.64", "seq.4479.14", "seq.5704.74", "seq.6493.9", "seq.7768.10", "seq.8068.43", "seq.8606.39", "seq.8877.22", "seq.8925.25", "seq.9398.30", "seq.9854.36")
 }
 
+if (split_by_batch) {
+	message("Provide the batch to consider")
+	#batch = 1
+	print(batch)
+}
 ###########################################
 ########## IMPORT PHENOTYPE
 ###########################################
@@ -68,16 +78,35 @@ covardata = filtered_df_tot[, c("FID", covar)]
 
 
 ###########################################
-########## TRASNFROM PROTEIN DATA
+########## SELECT PROTEIN DATA
 ###########################################
 
 if (select_seqids) {
-        protdata = filtered_df_tot[, c("FID", tested_seqid)]
+        protdata = filtered_df_tot[, c("FID", tested_seqids)]
 }
 if (!select_seqids) {
 	all_seqids = names(filtered_df_tot)[grep("seq.", names(filtered_df_tot))]
         protdata = filtered_df_tot[, c("FID", all_seqids)]
 }
+
+
+###########################################
+########## SELECT ALL OR SPLIT BY BATCH
+###########################################
+
+if (split_by_batch) {
+	message("Selecting only batch ", batch)
+	batch_fid = filtered_df_tot$FID[filtered_df_tot$Batch==batch]
+	length(batch_fid)
+
+	protdata = subset(protdata, protdata$FID %in% batch_fid)
+	covardata = subset(covardata, covardata$FID %in% batch_fid)
+}
+
+
+###########################################
+########## TRASNFROM PROTEIN DATA
+###########################################
 
 # This is from Michela/Solene/Alessia's script /exchange/healthds/pQTL/results/INTERVAL/residuals/protein_residuals_fitting.R
 if (transform == TRUE){
@@ -99,28 +128,17 @@ protdata = cbind.data.frame(IID = protdata[,"FID"], protdata)
 
 data = merge(protdata, covardata, by = "FID")
 
-
-###########################################
-########## WRITE
-###########################################
-
-if (!split_by_batch) {
-	write.table(data, file="/scratch/c.giambartolomei/TEST_INTERVAL_plink/april2024/pheno_selected.txt", sep="\t", row.names = FALSE, quote = FALSE, col.names = TRUE)
-}
-
-if (split_by_batch) {
-	data_Batch1 = data[data$Batch == 1,]
-	data_Batch2 = data[data$Batch == 2,]
-	write.table(data_Batch1, file="/scratch/c.giambartolomei/TEST_INTERVAL_plink/april2024/pheno_selected_Batch1.txt", sep="\t", row.names = FALSE, quote = FALSE, col.names = TRUE)
-	write.table(data_Batch2, file="/scratch/c.giambartolomei/TEST_INTERVAL_plink/april2024/pheno_selected_Batch2.txt", sep="\t", row.names = FALSE, quote = FALSE, col.names = TRUE)
-}
-
-
-
 ###########################################
 ########## If you want to continue creating the adjusted file used in the pQTL in Regenie 
 ########## Pipeline contiued from /exchange/healthds/pQTL/results/INTERVAL/residuals/protein_residuals_fitting.R
 ########## NOTE: with these specs, this file is identical to "/exchange/healthds/pQTL/results/INTERVAL/INTERVAL_NonImp_residuals_final.txt" that we used for pQTL analyses
+#remove_ashk = FALSE
+#transform = TRUE
+#select_seqids = TRUE
+#residual = TRUE
+#split_by_batch = FALSE
+
+if (residual) {
 
 # REGRESSION FUNCTION
 lm_reg_residuals = function(Y, dataset, model_definition)
@@ -130,6 +148,10 @@ lm_reg_residuals = function(Y, dataset, model_definition)
 }
 
 model_definition = "~ Batch + agePulse + sex + difftime + process_month + PC1+PC2+PC3+PC4+PC5+PC6+PC7+PC8+PC9+PC10"
+if (split_by_batch) {
+	model_definition = "~ agePulse + sex + difftime + process_month + PC1+PC2+PC3+PC4+PC5+PC6+PC7+PC8+PC9+PC10"
+}
+
 protnames = colnames(protdata)[-c(1,2)]
 id_cols = c("IID", "FID")
 data_all_info = data
@@ -156,4 +178,35 @@ data_all_info = data
 
   data_res = cbind(data_all_info[,id_cols], data_res)
 
+  data = data_res
+}
+
+
+###########################################
+########## WRITE
+###########################################
+
+#outfile_prefix = paste("pheno", "_remove_ashk", remove_ashk, "_transform", transform, "_residual", residual, sep="")
+outfile_prefix = paste("pheno", "_transformINV_", transform, sep="")
+
+if (split_by_batch) {
+	outfile_prefix = paste(outfile_prefix, "_batch",  batch, sep = "")
+}
+
+if (residual) {
+        outfile_prefix = paste(outfile_prefix, "_ResidualModel_", gsub(" |~", "", model_definition), sep="")
+}
+
+if (!residual) {
+	outfile_prefix = paste(outfile_prefix, "_ResidualModel_FALSE", sep="")
+}
+
+if (remove_ashk) {
+        outfile_prefix = paste(outfile_prefix, "remove_ashk", remove_ashk, sep="")
+}
+
+outfile = paste(outfile_prefix, ".txt", sep="")
+message("Out file in: ", outfile)
+
+write.table(data, file=outfile, sep="\t", row.names = FALSE, quote = FALSE, col.names = TRUE)
 
