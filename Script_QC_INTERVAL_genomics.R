@@ -37,7 +37,7 @@ BiocManager::install("snpStats")
 ## import samples present in the proteomics
 # path_prot <- "/center/healthds/pQTL/INTERVAL/cleaned_INTERVAL.Rds"
 new_path_prot <- "/exchange/healthds/pQTL/INTERVAL/residuals/INTERVAL_include_protein_LOD_proteomics/data_all_not_imputed_include_LOD_without_transform_ANMLSMP_INTERVAL_QC.Rds"
-prot_data <- readRDS(new_path_prot, refhook = NULL)
+prot_data <- readRDS(new_path_prot, refhook = NULL) #9655
 # prot_data <- data.frame(prot_data$imputed_cleaned_dataset) 
 prot_ids <- prot_data[prot_data$SampleType == 'Sample', ]$SampleId
 
@@ -49,7 +49,7 @@ prot_ids <- as.factor(prot_ids)
 id_conversion <- read.csv("/processing_data/shared_datasets/plasma_proteome/interval/phenotypes/INTERVAL_OmicsMap_20221221.csv", )
 id_conversion <- id_conversion[,c(1,2,4,5,16)] 
 id_conversion <- id_conversion %>% drop_na(Soma7000_RAW) #9769
-id_conversion <- id_conversion[,c(1,3,5)] #9769
+id_conversion <- id_conversion[,c(1,3,6)] #9769
 id_conversion <- id_conversion %>% drop_na() #9443
 # the rest are NA in the conversion file
 
@@ -75,7 +75,7 @@ common_ids = common_ids %>% filter(!Affymetrix_gwasQC_bl %in% extra_ids)
 common_ids$Affymetrix_gwasQC_bl <- as.numeric(common_ids$Affymetrix_gwasQC_bl)
 
 write.csv(common_ids, "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/common_ids_gen_prot.csv", row.names=FALSE)
-# 9327 common ids between genomic and proteomics data
+# 9325 common ids between genomic and proteomics data
 
 
 uncommon_ids <- id_conversion[!(id_conversion$Soma7000_RAW %in% as.numeric(common_prot_ids)),]
