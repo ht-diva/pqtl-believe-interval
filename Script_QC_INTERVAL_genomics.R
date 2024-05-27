@@ -38,7 +38,7 @@ BiocManager::install("snpStats")
 # path_prot <- "/center/healthds/pQTL/INTERVAL/cleaned_INTERVAL.Rds"
 new_path_prot <- "/exchange/healthds/pQTL/INTERVAL/residuals/INTERVAL_include_protein_LOD_proteomics/data_all_not_imputed_include_LOD_without_transform_ANMLSMP_INTERVAL_QC.Rds"
 prot_data <- readRDS(new_path_prot, refhook = NULL)
-prot_data <- data.frame(prot_data$imputed_cleaned_dataset) #9657
+# prot_data <- data.frame(prot_data$imputed_cleaned_dataset) #9657
 prot_ids <- prot_data[prot_data$SampleType == 'Sample', ]$SampleId
 
 ## import genomic non imputed data
