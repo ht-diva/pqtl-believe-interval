@@ -82,7 +82,7 @@ uncommon_ids <- id_conversion[!(id_conversion$Soma7000_RAW %in% as.numeric(commo
 uncommon_ids$Affymetrix_gwasQC_bl = as.character(uncommon_ids$Affymetrix_gwasQC_bl)
 uncommon_ids_check = common_ids %>% filter(Affymetrix_gwasQC_bl %in% extra_ids)
 uncommon_ids$Affymetrix_gwasQC_bl = as.numeric(uncommon_ids$Affymetrix_gwasQC_bl)
-# 116 uncommon ids
+# 118 uncommon ids
 
 write.csv(uncommon_ids, "/group/diangelantonio/users/alessia_mapelli/QC_gen_INTERVAL/non_common_ids_gen_prot.csv", row.names=FALSE)
 
