@@ -23,7 +23,7 @@ particular locations and set of data. A complete list of parameters to set will 
 
 #### Parameters regarding models, phenotype and covariates
 
-File: `chris_somalogic_pGWAS.conf`
+File: [`chris_somalogic_pGWAS.conf`](chris_somalogic_pGWAS.conf)
 
 ```{java}
 params.project = 'somalogic'
