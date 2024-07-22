@@ -39,7 +39,7 @@ params.phenotypes_columns = 'x0so0034,x0so0035'
 params.phenotypes_delete_missings = true
 
 // Transform using Rank Inverse Normal
-params.phenotypes_apply_rint = true
+params.phenotypes_apply_rint = false
 
 // Define here where all the results will be output
 params.outdir="<output_directory>"
@@ -47,13 +47,7 @@ params.outdir="<output_directory>"
 // maf/mac parameters
 params.qc_maf=0.01
 params.qc_mac=100
-params.regenie_min_mac=100
-
-// Covariates
-// It should start with two columns
-// FID\tIID such as the fam file in plink format.
-params.covariates_filename="covariates_somalogic.tsv"
-params.covariates_columns="AGE,SEX,PC1,PC2,PC3,PC4,PC5,PC6,PC7,PC8,PC9,PC10,PlateId"
+params.regenie_min_mac=10
 
 // Include additional parameters
 // See below
