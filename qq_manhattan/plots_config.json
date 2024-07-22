@@ -1,0 +1,12 @@
+{
+    "gwas_files_list_dir": "/exchange/healthds/pQTL/INTERVAL/summary_stats/pQTL/list.txt",
+    "save_path": "res/",
+    "scaled": true,
+    "build": "19",
+    "skip": 1,
+    "cut_dist": 2,
+    "sig_level": 5e-8,
+    "maf_bins": [[0, 0.01], [0.01, 0.05], [0.05, 1]],
+    "stratified": true,
+    "n_processes": 4
+}

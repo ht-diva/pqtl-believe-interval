@@ -1,0 +1,26 @@
+{
+    "target_gene_map_file_dir": "target_gene_mapping_file_v9-12-23.csv",
+    "map_file_chrom_col": "chromosome",
+    "map_file_start_col": "start",
+    "map_file_end_col": "end",
+    "map_file_gene_name": "Entrez_Gene_Name",
+    
+    "gene_pos_file_dir": "glist-hg19.txt",
+    "genepos_file_genecol_name": "GENE_NAME",
+    
+    "gwas_files_dir": "t/",
+    "prot_id_column_name": "SeqId",
+    "pval_column" : "P",
+    
+    
+    "snp_file_pos_col": "POS",
+    "snp_file_chrom_col": "#CHROM",
+    
+    "pvalue_threshold": 5e-8,
+    "region_buffer_value": 500000,
+    "proximality_threshold": 5000,
+    "columns_to_drop": ["TOTAL", "NONSIG", "S0.05", "S0.01", "S0.001", "S0.0001", "SP2"],
+    
+    "save_path": ".",
+    "output_filename" : "test_out.pkl"
+}

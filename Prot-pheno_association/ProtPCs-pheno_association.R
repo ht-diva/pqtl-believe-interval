@@ -4,17 +4,26 @@ library(lme4)
 library(dplyr)
 library(ggplot2)
 
-col_of_start_protein <- 95
 
-data_full <- readRDS("/center/healthds/pQTL/INTERVAL/cleaned_INTERVAL.Rds")$imputed_cleaned_dataset
-protnames <- colnames(data_full)[col_of_start_protein:length(colnames(data_full))]
-protdata <- data_full[protnames]
-SampleId <- data_full$SampleId
+file_path <- "/exchange/healthds/pQTL/INTERVAL/Proteomics_QC_files/data_all_not_imputed_without_transform_ANMLSMP_INTERVAL_QC.Rds"
+data_new <- readRDS(file_path)
+head(colnames(data_new), 33)
+tail(colnames(data_new), 62)
+col_of_start_protein <- 34
+col_of_end_protein <- length(colnames(data_new)) - 61
+protnames <- colnames(data_new)[col_of_start_protein:col_of_end_protein]
+protdata <- data_new[protnames]
+SampleId <- data_new$SampleId
 export_prot_data <- cbind(protdata, SampleId)
 write.csv(export_prot_data, "Interval_prot_data.csv")
-phenonames <- colnames(data_full)[1:col_of_start_protein-1]
-phenodata <- data_full[phenonames]
+
+phenonames_1 <- colnames(data_new)[1:col_of_start_protein-1]
+phenodata_1 <- data_new[phenonames_1]
+phenonames_2 <- colnames(data_new)[(col_of_end_protein+1): length(colnames(data_new))]
+phenodata_2 <- data_new[phenonames_2]
+phenodata <- cbind(phenodata_1, phenodata_2)
 agePulse2 <- phenodata$agePulse*phenodata$agePulse
+phenodata$bmi<-as.numeric(phenodata$wt_bl)/(as.numeric(phenodata$ht_bl)^2)
 phenodata <- cbind(phenodata, agePulse2)
 phenodata$processDate_bl <- as.Date(phenodata$processDate_bl, "%d%b%Y")
 phenodata$attendanceDate <- as.Date(phenodata$attendanceDate, "%d%b%Y")
@@ -24,10 +33,10 @@ phenodata$BloodDraw <-
   as.POSIXct(paste(phenodata$attendanceDate, phenodata$appointmentTime, sep=" "), format = "%Y-%m-%d %H:%M", tz="Europe/London")
 phenodata$difftime <-
   as.numeric(difftime(phenodata$ProcessSample, phenodata$BloodDraw, units = "auto"))
+phenodata$ProcessSample_month <- format(phenodata$ProcessSample, "%m")
 write.csv(phenodata, "Interval_pheno_data.csv")
 meta_data_full <- readRDS("/center/healthds/pQTL/INTERVAL/cleaned_INTERVAL.Rds")$metadata
 write.csv(meta_data_full, "Interval_meta_data.csv")
-
 
 ####PCA to assess covariates effect####
 ##log transform, scale
@@ -40,7 +49,7 @@ A<-as.matrix(acp_p1$var$coord)
 dt_PC<-as.matrix(dt_PC)
 PC<-dt_PC%*%A
 Pc<-as.data.frame(PC)
-SampleId <- data_full$SampleId
+SampleId <- data_new$SampleId
 Pc <- cbind(Pc, SampleId)
 write.csv(Pc, "PCs_10.csv")
 
@@ -62,32 +71,43 @@ p<-ggplot(dtjoin,aes(x=Dim.1,y=Dim.2,col=as.numeric(agePulse)))+geom_point()
 p
 p<-ggplot(dtjoin,aes(x=Dim.1,y=Dim.2,col=as.numeric(bmi)))+geom_point()
 p
+p<-ggplot(dtjoin,aes(x=Dim.1,y=Dim.2,col=as.factor(SOMAPICK_CASE)))+geom_point()
+p
+p<-ggplot(dtjoin,aes(x=Dim.1,y=Dim.2,col=as.numeric(ProcessSample_month)))+geom_point()
+p
 
-
+dtjoin <- dtjoin[c("SampleId", "identifier","Dim.1", "Dim.2", "Dim.3", "Dim.4", "Dim.5", "Dim.6", "Dim.7", "Dim.8", "Dim.9", "Dim.10", "Batch", "PlateId", "difftime", "sexPulse", "agePulse", "SOMAPICK_CASE", "agePulse2","ProcessSample_month", "ethnicPulse", "bmi")]
+dtjoin$SampleId <- as.factor(dtjoin$SampleId)
+dtjoin$identifier <- as.factor(dtjoin$identifier)
 dtjoin$sexPulse<-as.factor(dtjoin$sexPulse)
 dtjoin$PlateId<-as.factor(dtjoin$PlateId)
 dtjoin$Batch<-as.factor(dtjoin$Batch)
+dtjoin$SOMAPICK_CASE<-as.factor(dtjoin$SOMAPICK_CASE)
 dtjoin$agePulse<-scale(dtjoin$agePulse)
 dtjoin$bmi<-scale(dtjoin$bmi)
 dtjoin$agePulse2<-scale(dtjoin$agePulse2)
 dtjoin$difftime<-scale(dtjoin$difftime)
 dtjoin$ethnicPulse<-as.factor(dtjoin$ethnicPulse)
+dtjoin$ProcessSample_month <- as.factor(dtjoin$ProcessSample_month)
 
+#### IMPUTE NA with the MEDIAN
+colSums(is.na(dtjoin))
+dtjoin <- dtjoin[!is.na(dtjoin$ProcessSample_month), ] 
+dtjoin <- as.data.frame(lapply(dtjoin, function(x) ifelse(is.na(x), median(x, na.rm = TRUE), x)))
+colSums(is.na(dtjoin))
+write.csv(dtjoin, "PCs_pheno_no_nan.csv")
 
+#### EXPLORATORY ANALYSIS
+hist(as.numeric(dtjoin$ProcessSample_month))
+hist(phenodata$difftime, xlab = "Difftime", main="Histogram of Difftime")
+
+### DEFINE THE MODELS
+# One for each single variable
 mod<-lm(data=dtjoin,formula=Dim.1~difftime)
 summary(mod)
-mod<-lm(data=dtjoin,formula=Dim.2~difftime)
-summary(mod)
 
-mod<-lm(data=dtjoin,formula=Dim.1~Batch+sexPulse+agePulse+PlateId+bmi+difftime)
-summary(mod)
-mod<-lm(data=dtjoin,formula=Dim.2~Batch+sexPulse+agePulse+PlateId+bmi+difftime)
+# Multivaraite model
+mod<-lm(data=dtjoin,formula=Dim.1~sexPulse+agePulse+PlateId+difftime)
 summary(mod)
 
 
-mod<-lmer(Dim.1~Batch+sexPulse+agePulse+(1|PlateId), data=dtjoin)
-summary(mod)
-mod<-lmer(Dim.1~batch+bmi+sexPulse+agePulse+as.factor(smCurr_bl)+as.numeric(CRP_bl)+(1|PlateId), data=dtjoin)
-summary(mod)
-# mod<-lmer(Dim.1~bmi+sexPulse+agePulse+KidneyDisease+(1|batch/PlateId), data=dtjoin)
-# summary(mod)
